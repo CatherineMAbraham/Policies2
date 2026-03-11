@@ -1,0 +1,9 @@
+tissue,number_of_springs,contact
+spring,3,False
+spring,3,True
+spring,5,False
+spring,5,True
+spring,10,False
+spring,10,True
+None,None,False
+None,None,True
