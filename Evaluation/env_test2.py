@@ -10,7 +10,7 @@ from stable_baselines3.common.monitor import Monitor
 import wandb
 import argparse
 
-def multiple_envs(threshold_pos=0.001, threshold_ori=0.08,n_envs=2,num_eps=100,log=True):
+def multiple_envs(threshold_pos=0.001, threshold_ori=0.08,n_envs=1,num_eps=100,log=True):
         env_kwargs = {
                 'reward_type': 'sparse',
                 'max_steps': 100,
@@ -24,14 +24,14 @@ def multiple_envs(threshold_pos=0.001, threshold_ori=0.08,n_envs=2,num_eps=100,l
                 'action_type': 'euler',
                 'maxforce': 5,
                 'start_pos' : 'home',
-                'render_mode':'n',
+                'render_mode':'human',
                 'test': True,}
 
         env = make_vec_env('gym_fracture:softsurg-v0', n_envs=n_envs, env_kwargs=env_kwargs,vec_env_cls=SubprocVecEnv)
-        env = VecNormalize.load("new/1/vec_normalize.pkl", env) # Register the environment
+        env = VecNormalize.load("/home/catherine/Policies2/Evaluation/new/1/vec_normalize.pkl", env) # Register the environment
         env.training = False
         env.norm_reward = False
-        model  = TD3.load("new/1/best_model.zip", env = env)
+        model  = TD3.load("/home/catherine/Policies2/Evaluation/new/1/best_model.zip", env = env)
         dones = []
         contacts = []
         num = num_eps

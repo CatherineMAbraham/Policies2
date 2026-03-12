@@ -65,10 +65,11 @@ def train(threshold_pos=0.001,
     softtissue = softtissue
     num_springs = num_springs
     contact_type = contact_type
+    print(contact_type)
     model_name = f'model-{train_date}-{action_type}-{threshold_pos}-{threshold_ori}-{ran}'
-    if log:
+    if log==1:
         wandb.init(project="Tissue", name = (f'{softtissue}-{train_date}-{num_springs}-{contact_type}-{ran}'),notes= (f"Git Commit: {commit}"),sync_tensorboard=True, save_code=True)  # Initialize W&B
-
+    print((f'{softtissue}-{train_date}-{num_springs}-{contact_type}-{ran}'))
     env_kwargs = {
         'reward_type': 'sparse',
         'max_steps': 100,
@@ -111,18 +112,18 @@ def train(threshold_pos=0.001,
 
 
    
-    eval_env=make_vec_env('gym_fracture:softsurg-v0', env_kwargs=env_kwargs, n_envs=10,vec_env_cls=SubprocVecEnv)
+    eval_env=make_vec_env('gym_fracture:softsurg-v0', env_kwargs=env_kwargs,vec_env_cls=SubprocVecEnv)
     
     eval_env = VecNormalize(eval_env, norm_obs=True, norm_reward=False)
     log_callback1 = log_callback.CustomCallback()
     success_callback = StopTrainingOnSuccessRate(vec_env=eval_env, 
-                                                 max_no_improvement_evals=10, 
+                                                 max_no_improvement_evals=1, 
                                                  success_threshold=0.8,  
                                                  min_evals=10, verbose=1, 
                                                  model_name = model_name,
                                                  model_save_path=f'./best_models/{ran}')
-    eval_callback = EvalCallback(eval_env,  eval_freq=1000,
-                                deterministic=True, n_eval_episodes=100,
+    eval_callback = EvalCallback(eval_env,  eval_freq=10000,
+                                deterministic=True, n_eval_episodes=50,
                                 callback_after_eval=success_callback)
 
     model.learn(2_500_000, callback=[eval_callback,log_callback1])
@@ -143,9 +144,9 @@ if __name__ == "__main__":
     parser.add_argument('--maxforce', type=float, default=4, help='Force threshold for the environment.')
     parser.add_argument('--softtissue', type=str, default="spring", help='Soft Tissue Type.')
     parser.add_argument('--num_springs', type=int, default=3, help='Number of springs for the soft tissue.')
-    parser.add_argument('--contact_type', type=bool, default=False, help='Type of contact for the environment.')
+    parser.add_argument('--contact_type', type=int, default=0, help='Type of contact for the environment.')
     parser.add_argument('--ran', type=str, default="1", help='Random seed for the run.')
-    parser.add_argument('--log', type=bool, default=True, help='Whether to log the training run to W&B.')
+    parser.add_argument('--log', type=int, default=1, help='Whether to log the training run to W&B.')
     args = parser.parse_args()
     train(threshold_pos=args.threshold_pos, 
           threshold_ori=args.threshold_ori, 
