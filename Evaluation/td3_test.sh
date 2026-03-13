@@ -9,7 +9,6 @@
 #SBATCH --array=1-8
 #SBATCH --mem=8G              # 8GB RAM per agent
 #SBATCH --time=10:00:00
-#SBATCH --output=.out
 
 module load Anaconda3/2024.02-1
 source activate softsurg

@@ -107,8 +107,6 @@ def multiple_envs(model_path,
                 wandb.run.summary["failure_contact"] = failure_contact
 if __name__ == "__main__":
     log = False
-    if log:
-        wandb.init(project="softsurg", name="test_run")
     parser = argparse.ArgumentParser(description="Test the trained model on multiple environments")
     parser.add_argument("--model_path", type=str, help="Path to the trained model zip file")
     parser.add_argument('--maxforce', type=float, default=4, help='Force threshold for the environment.')
@@ -119,6 +117,8 @@ if __name__ == "__main__":
     parser.add_argument("--num_eps", type=int, default=100, help="Number of episodes to collect data for")
     parser.add_argument("--log", type=bool, default=False, help="Whether to log results to Weights & Biases")
     args = parser.parse_args()
+    if log:
+        wandb.init(project="softsurg", name=f"test_{args.model_path.split('/')[-1]}")
     multiple_envs(
     model_path=args.model_path,
     maxforce=args.maxforce,
