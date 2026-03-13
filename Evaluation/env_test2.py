@@ -31,6 +31,7 @@ def multiple_envs(model_path,
                 'softtissue': softtissue,
                 'action_type': 'euler',
                 'maxforce': maxforce,
+                'contact_type' : 1,
                 'start_pos' : 'home',
                 'render_mode': None,
                 'test': True,}
