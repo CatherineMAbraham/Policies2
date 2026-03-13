@@ -19,6 +19,12 @@ def multiple_envs(model_path,
                   n_envs=1,
                   num_eps=100,
                   log=True):
+        #Find the last value in the model string 
+        contact_model= model_path.split('-')[-1]
+        if contact_model == '1' or contact_model == '3' or contact_model == '5' or contact_model == '7':
+                contact_type = 0
+        else:
+                contact_type = 1
         env_kwargs = {
                 'reward_type': 'sparse',
                 'max_steps': 100,
@@ -31,7 +37,7 @@ def multiple_envs(model_path,
                 'softtissue': softtissue,
                 'action_type': 'euler',
                 'maxforce': maxforce,
-                'contact_type' : 1,
+                'contact_type' : contact_type,
                 'start_pos' : 'home',
                 'render_mode': None,
                 'test': True,}
