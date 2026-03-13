@@ -48,25 +48,24 @@ class StopTrainingOnSuccessRate(BaseCallback):
 
         if self.n_calls > self.min_evals:
             success_rate = np.mean(self.parent._is_success_buffer)
-            if success_rate < self.success_threshold:
-                self.max_success_evals = 0
-                if self.threshold_met ==1:
-                    self.no_improvement_evals += 1
+            if success_rate >= self.success_threshold and success_rate > self.best_success_rate:
+                # New best — save model and reset no-improvement counter
+                self.threshold_met = 1
+                self.best_success_rate = success_rate
+                self.no_improvement_evals = 0
+                model_path = os.path.join(self.model_save_path, self.model_name)
+                self.model.save(os.path.join(model_path, self.model_name))
+                stats_path = os.path.join(self.model_save_path, self.model_name, "vec_normalize.pkl")
+                self.vec_env.save(stats_path)
+                with open('/users/cop21cma/Policies2/Evaluation/model_log.csv', 'a') as f:
+                    f.write(f'{model_path}\n')
+                if self.verbose >= 1:
+                    print(f"New best success rate: {self.best_success_rate:.2f} - model saved to {model_path}")
             else:
-                self.max_success_evals += 1
-                if success_rate > self.best_success_rate:
-                    self.threshold_met =1
-                    self.best_success_rate = success_rate
-                    self.no_improvement_evals = 0
-                    self.model.save(os.path.join(self.model_save_path,self.model_name,self.model_name))
-                    stats_path = os.path.join(self.model_save_path,self.model_name ,"vec_normalize.pkl")
-                    self.vec_env.save(stats_path)
-                    if self.verbose >= 1:
-                        print(
-                            f"New best success rate: {self.best_success_rate:.2f} - model saved to {os.path.join(self.model_save_path, self.model_name)}"
-                        )
-                else: 
+                # Not a new best — count as no-improvement only after threshold was ever met
+                if self.threshold_met:
                     self.no_improvement_evals += 1
+
             if self.no_improvement_evals >= self.max_no_improvement_evals:
                 continue_training = False
 

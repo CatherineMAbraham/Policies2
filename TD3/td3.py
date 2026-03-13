@@ -65,7 +65,7 @@ def train(threshold_pos=0.001,
     softtissue = softtissue
     num_springs = num_springs
     contact_type = contact_type
-    print(contact_type)
+    #print(contact_type)
     name = f'{softtissue}_{train_date}_{num_springs}_{contact_type}_{ran}'
     model_name = f'model-{name}'
     if log==1:
@@ -86,7 +86,7 @@ def train(threshold_pos=0.001,
         'contact_type' :contact_type,
         'number_of_springs':num_springs,
         'softtissue':'soft',
-        'test': True,
+        'test': False,
         'render_mode': None}
         #"0.025 -0.04 0" rpy="0 1.57 0"
     

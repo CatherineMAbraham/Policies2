@@ -84,6 +84,7 @@ def train(threshold_pos=0.001,
         'contact_type' :contact_type,
         'number_of_springs':num_springs,
         'softtissue':softtissue,
+        'test': True,
         'render_mode': None}
         #"0.025 -0.04 0" rpy="0 1.57 0"
     
@@ -118,14 +119,14 @@ def train(threshold_pos=0.001,
     success_callback = StopTrainingOnSuccessRate(vec_env=eval_env, 
                                                  max_no_improvement_evals=10, 
                                                  success_threshold=0.4,  
-                                                 min_evals=10, verbose=1, 
+                                                 min_evals=1, verbose=1, 
                                                  model_name = model_name,
                                                  model_save_path=f'./best_models/{ran}')
-    eval_callback = EvalCallback(eval_env,  eval_freq=1000,
+    eval_callback = EvalCallback(eval_env,  eval_freq=10000,
                                 deterministic=True, n_eval_episodes=20,
                                 callback_after_eval=success_callback)
 
-    model.learn(500_000, callback=[eval_callback,log_callback1])
+    model.learn(100_000, callback=[eval_callback,log_callback1])
     #save model name in log file
     with open('./logs/model_log.txt', 'w') as f:
         f.write(f'{model_name}\n')

@@ -6,7 +6,7 @@
 # Generate combinations of tissue option, number of springs
 for tissue in "spring" "None"; do
     if [ "$tissue" = "spring" ]; then
-        options=("3" "5" "10")
+        options=("1" "3" "5" "10")
     else
         options=("1")
     fi
