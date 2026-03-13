@@ -9,8 +9,9 @@ from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.monitor import Monitor
 import wandb
 import argparse
+from pathlib import Path
 
-def multiple_envs(threshold_pos=0.001, threshold_ori=0.08,n_envs=1,num_eps=100,log=True):
+def multiple_envs(model_path,threshold_pos=0.001, threshold_ori=0.08,n_envs=1,num_eps=100,log=True):
         env_kwargs = {
                 'reward_type': 'sparse',
                 'max_steps': 100,
@@ -28,10 +29,21 @@ def multiple_envs(threshold_pos=0.001, threshold_ori=0.08,n_envs=1,num_eps=100,l
                 'test': True,}
 
         env = make_vec_env('gym_fracture:softsurg-v0', n_envs=n_envs, env_kwargs=env_kwargs,vec_env_cls=SubprocVecEnv)
-        env = VecNormalize.load("/home/catherine/Policies2/Evaluation/new/1/vec_normalize.pkl", env) # Register the environment
+        env = VecNormalize.load(f"{model_path}/vec_normalize.pkl", env) # Register the environment
         env.training = False
         env.norm_reward = False
-        model  = TD3.load("/home/catherine/Policies2/Evaluation/new/1/best_model.zip", env = env)
+        model_dir = Path(model_path)
+        model_candidates = sorted(
+                [p for p in model_dir.glob("model*") if p.is_file()],
+                key=lambda p: p.stat().st_mtime,
+                reverse=True,
+        )
+        if not model_candidates:
+                raise FileNotFoundError(f"No model files starting with 'model' found in {model_dir}")
+
+        selected_model = model_candidates[0]
+        model = TD3.load(str(selected_model), env=env)
+        print(f"Loaded model: {selected_model}")
         dones = []
         contacts = []
         num = num_eps
@@ -86,6 +98,7 @@ if __name__ == "__main__":
     if log:
         wandb.init(project="softsurg", name="test_run")
     parser = argparse.ArgumentParser(description="Test the trained model on multiple environments")
+    parser.add_argument("--model_path", type=str, help="Path to the trained model zip file")
     parser.add_argument("--threshold_pos", type=float, default=0.001, help="Position threshold for success")
     parser.add_argument("--threshold_ori", type=float, default=0.08, help="Orientation threshold for success")
     parser.add_argument("--n_envs", type=int, default=1, help="Number of parallel environments to test on")
@@ -93,6 +106,7 @@ if __name__ == "__main__":
     parser.add_argument("--log", type=bool, default=False, help="Whether to log results to Weights & Biases")
     args = parser.parse_args()
     multiple_envs(
+    model_path=args.model_path,
     threshold_pos=args.threshold_pos,
     threshold_ori=args.threshold_ori,
     n_envs=args.n_envs,
