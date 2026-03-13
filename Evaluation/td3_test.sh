@@ -7,7 +7,7 @@
 #SBATCH --ntasks=1            # 4 agents total
 #SBATCH --cpus-per-task=10      # 4 CPUs per agent
 #SBATCH --array=1-4
-#SBATCH --mem=8G              # 8GB RAM per agent
+#SBATCH --mem=20G              # 8GB RAM per agent
 #SBATCH --time=00:30:00
 
 module load Anaconda3/2024.02-1
