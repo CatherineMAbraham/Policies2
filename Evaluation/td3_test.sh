@@ -20,4 +20,4 @@ IFS=',' read -r MODEL <<< "$PARAM_LINE"
 MODEL=${MODEL//\'/}
 echo "Testing model: $MODEL"
 #srun --export=ALL 
-python env_test2.py --num_eps 100 --n_envs 10 --model_path "$MODEL"
+python env_test2.py --num_eps 100 --n_envs 10 --model_path "$MODEL" --log 1
