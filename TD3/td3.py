@@ -66,9 +66,10 @@ def train(threshold_pos=0.001,
     num_springs = num_springs
     contact_type = contact_type
     print(contact_type)
-    model_name = f'model-{train_date}-{action_type}-{threshold_pos}-{threshold_ori}-{ran}'
+    name = f'{softtissue}_{train_date}_{num_springs}_{contact_type}_{ran}'
+    model_name = f'model-{name}'
     if log==1:
-        wandb.init(project="Tissue", name = (f'{softtissue}-{train_date}-{num_springs}-{contact_type}-{ran}'),notes= (f"Git Commit: {commit}"),sync_tensorboard=True, save_code=True)  # Initialize W&B
+        wandb.init(project="Tissue", name = (name),notes= (f"Git Commit: {commit}"),sync_tensorboard=True, save_code=True)  # Initialize W&B
     print((f'{softtissue}-{train_date}-{num_springs}-{contact_type}-{ran}'))
     env_kwargs = {
         'reward_type': 'sparse',
@@ -84,7 +85,8 @@ def train(threshold_pos=0.001,
         'maxforce': maxforce,
         'contact_type' :contact_type,
         'number_of_springs':num_springs,
-        'softtissue':softtissue,
+        'softtissue':'soft',
+        'test': True,
         'render_mode': None}
         #"0.025 -0.04 0" rpy="0 1.57 0"
     

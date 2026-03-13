@@ -11,7 +11,14 @@ import wandb
 import argparse
 from pathlib import Path
 
-def multiple_envs(model_path,threshold_pos=0.001, threshold_ori=0.08,n_envs=1,num_eps=100,log=True):
+def multiple_envs(model_path,
+                  threshold_pos=0.001, 
+                  threshold_ori=0.08,
+                  maxforce=5,
+                  softtissue='spring',
+                  n_envs=1,
+                  num_eps=100,
+                  log=True):
         env_kwargs = {
                 'reward_type': 'sparse',
                 'max_steps': 100,
@@ -21,9 +28,9 @@ def multiple_envs(model_path,threshold_pos=0.001, threshold_ori=0.08,n_envs=1,nu
                 'dt': 0.001,
                 'dr':0.01,
                 'distance_threshold_ori': threshold_ori,
-                'softtissue': 'soft',
+                'softtissue': softtissue,
                 'action_type': 'euler',
-                'maxforce': 5,
+                'maxforce': maxforce,
                 'start_pos' : 'home',
                 'render_mode':'human',
                 'test': True,}
@@ -92,13 +99,20 @@ def multiple_envs(model_path,threshold_pos=0.001, threshold_ori=0.08,n_envs=1,nu
         print(f"{'Success, Contact':<20} {success_contact:<10}")
         print(f"{'Failure, Contact':<20} {failure_contact:<10}")
         print(f"\nOverall Success Rate: {sum(dones)/len(dones):.2%}")
-
+        if log:
+                wandb.run.summary["overall_success_rate"] = sum(dones) / len(dones)
+                wandb.run.summary["success_no_contact"] = success_no_contact
+                wandb.run.summary["failure_no_contact"] = failure_no_contact
+                wandb.run.summary["success_contact"] = success_contact
+                wandb.run.summary["failure_contact"] = failure_contact
 if __name__ == "__main__":
-    log =False
+    log = False
     if log:
         wandb.init(project="softsurg", name="test_run")
     parser = argparse.ArgumentParser(description="Test the trained model on multiple environments")
     parser.add_argument("--model_path", type=str, help="Path to the trained model zip file")
+    parser.add_argument('--maxforce', type=float, default=4, help='Force threshold for the environment.')
+    parser.add_argument('--softtissue', type=str, default="spring", help='Soft Tissue Type.')
     parser.add_argument("--threshold_pos", type=float, default=0.001, help="Position threshold for success")
     parser.add_argument("--threshold_ori", type=float, default=0.08, help="Orientation threshold for success")
     parser.add_argument("--n_envs", type=int, default=1, help="Number of parallel environments to test on")
@@ -107,6 +121,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     multiple_envs(
     model_path=args.model_path,
+    maxforce=args.maxforce,
+    softtissue=args.softtissue,
     threshold_pos=args.threshold_pos,
     threshold_ori=args.threshold_ori,
     n_envs=args.n_envs,

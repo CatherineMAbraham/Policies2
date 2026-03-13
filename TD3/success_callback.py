@@ -40,7 +40,7 @@ class StopTrainingOnSuccessRate(BaseCallback):
         self.best_success_rate = -np.inf
         self.model_save_path = model_save_path
         self.model_name = model_name
-
+        self.threshold_met = 0
     def _on_step(self) -> bool:
         assert self.parent is not None, "``StopTrainingOnSuccessRate`` callback must be used with an ``EvalCallback``"
 
@@ -50,9 +50,12 @@ class StopTrainingOnSuccessRate(BaseCallback):
             success_rate = np.mean(self.parent._is_success_buffer)
             if success_rate < self.success_threshold:
                 self.max_success_evals = 0
+                if self.threshold_met ==1:
+                    self.no_improvement_evals += 1
             else:
                 self.max_success_evals += 1
                 if success_rate > self.best_success_rate:
+                    self.threshold_met =1
                     self.best_success_rate = success_rate
                     self.no_improvement_evals = 0
                     self.model.save(os.path.join(self.model_save_path,self.model_name,self.model_name))
@@ -64,8 +67,8 @@ class StopTrainingOnSuccessRate(BaseCallback):
                         )
                 else: 
                     self.no_improvement_evals += 1
-                if self.no_improvement_evals >= self.max_no_improvement_evals:
-                    continue_training = False
+            if self.no_improvement_evals >= self.max_no_improvement_evals:
+                continue_training = False
 
 
         if self.verbose >= 1 and not continue_training:
