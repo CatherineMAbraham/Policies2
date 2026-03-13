@@ -32,7 +32,7 @@ def multiple_envs(model_path,
                 'action_type': 'euler',
                 'maxforce': maxforce,
                 'start_pos' : 'home',
-                'render_mode':'human',
+                'render_mode': None,
                 'test': True,}
 
         env = make_vec_env('gym_fracture:softsurg-v0', n_envs=n_envs, env_kwargs=env_kwargs,vec_env_cls=SubprocVecEnv)
@@ -80,7 +80,7 @@ def multiple_envs(model_path,
                                 
                                 episodes_collected += 1
                                 print(f"[{episodes_collected}/{num}] Env {i} Success: {is_success} Force: {info.get('force')} Contact: {has_contact}")
-                                if log:
+                                if log==1:
                                     #table = wandb.Table(data = is_success,columns=["Episode", "Success"])
                                     #histogram = wandb.plot.Histogram(table,value='Success', title="Success Distribution")
                                     wandb.log({"Episode": episodes_collected,  "Contact": has_contact})
@@ -99,14 +99,14 @@ def multiple_envs(model_path,
         print(f"{'Success, Contact':<20} {success_contact:<10}")
         print(f"{'Failure, Contact':<20} {failure_contact:<10}")
         print(f"\nOverall Success Rate: {sum(dones)/len(dones):.2%}")
-        if log:
+        if log ==1:
                 wandb.run.summary["overall_success_rate"] = sum(dones) / len(dones)
                 wandb.run.summary["success_no_contact"] = success_no_contact
                 wandb.run.summary["failure_no_contact"] = failure_no_contact
                 wandb.run.summary["success_contact"] = success_contact
                 wandb.run.summary["failure_contact"] = failure_contact
 if __name__ == "__main__":
-    log = False
+    log = True
     parser = argparse.ArgumentParser(description="Test the trained model on multiple environments")
     parser.add_argument("--model_path", type=str, help="Path to the trained model zip file")
     parser.add_argument('--maxforce', type=float, default=4, help='Force threshold for the environment.')
@@ -117,8 +117,10 @@ if __name__ == "__main__":
     parser.add_argument("--num_eps", type=int, default=100, help="Number of episodes to collect data for")
     parser.add_argument("--log", type=bool, default=False, help="Whether to log results to Weights & Biases")
     args = parser.parse_args()
+    #remove everything before model in the model path
+    model_name = args.model_path.split("/")[-1].split(".")[0]
     if log:
-        wandb.init(project="softsurg", name=f"test_{args.model_path.split('/')[-1]}")
+        wandb.init(project="softsurg", name=f"test_{model_name}")
     multiple_envs(
     model_path=args.model_path,
     maxforce=args.maxforce,
