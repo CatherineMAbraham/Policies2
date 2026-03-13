@@ -85,7 +85,7 @@ def train(threshold_pos=0.001,
         'maxforce': maxforce,
         'contact_type' :contact_type,
         'number_of_springs':num_springs,
-        'softtissue':'soft',
+        'softtissue':softtissue,
         'test': False,
         'render_mode': None}
         #"0.025 -0.04 0" rpy="0 1.57 0"
