@@ -1,3 +1,5 @@
+import os
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pybullet as p
@@ -43,10 +45,12 @@ def multiple_envs(model_path,
                 'test': True,}
 
         env = make_vec_env('gym_fracture:softsurg-v0', n_envs=n_envs, env_kwargs=env_kwargs,vec_env_cls=SubprocVecEnv)
-        env = VecNormalize.load(f"{model_path}/vec_normalize.pkl", env) # Register the environment
+        model_path2 = os.path.join("/users/cop21cma/Policies2/TD3/", model_path)
+        
+        env = VecNormalize.load(f"{model_path2}/vec_normalize.pkl", env) # Register the environment
         env.training = False
         env.norm_reward = False
-        model_dir = Path(model_path)
+        model_dir = Path(model_path2)
         model_candidates = sorted(
                 [p for p in model_dir.glob("model*") if p.is_file()],
                 key=lambda p: p.stat().st_mtime,
