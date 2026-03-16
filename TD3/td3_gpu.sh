@@ -7,7 +7,7 @@
 #SBATCH --ntasks=1            # 4 agents total
 #SBATCH --cpus-per-task=1      # 4 CPUs per agent
 #SBATCH --mem=8G              # 8GB RAM per agent
-#SBATCH --array=1-4
+#SBATCH --array=1-8
 #SBATCH --time=28:00:00
 #SBATCH --output=out_%A_%a.out
 
@@ -20,5 +20,4 @@ PARAM_LINE=$(sed -n "${TASK_ID}p" tests.csv)
 IFS=',' read -r TISSUE NUM_SPRINGS YM <<< "$PARAM_LINE"
 echo "Running test with: Tissue=$TISSUE, Num_Springs=$NUM_SPRINGS, Youngs_Modulus=$YM"
 # Run the script
-#srun --export=ALL 
-python td3.py --threshold_pos 0.001 --threshold_ori 5 --action_type euler --maxforce 3.5 --softtissue "$TISSUE" --num_springs "$NUM_SPRINGS" --youngs_modulus "$YM" --contact_type 0 #--ran $SLURM_ARRAY_TASK_ID
+srun --export=ALL python td3.py --threshold_pos 0.001 --threshold_ori 5 --action_type euler --maxforce 3.5 --softtissue "$TISSUE" --num_springs "$NUM_SPRINGS" --youngs_modulus "$YM" --contact_type 0 --ran $SLURM_ARRAY_TASK_ID
