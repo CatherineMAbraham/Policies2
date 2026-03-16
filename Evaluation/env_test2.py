@@ -19,9 +19,9 @@ def multiple_envs(model_path,
                   n_envs=1,
                   num_eps=100,
                   log=True):
-        #Find the last value in the model string 
-        contact_model= model_path.split('-')[-1]
-        if contact_model == '1' or contact_model == '3' or contact_model == '5' or contact_model == '7':
+        #Find the second last value in the model string 
+        contact_model= model_path.split('-')[-2]
+        if contact_model == '0' :
                 contact_type = 0
         else:
                 contact_type = 1
