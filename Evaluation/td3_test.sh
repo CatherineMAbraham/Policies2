@@ -15,7 +15,7 @@ source activate softsurg
 
 # Run the script
 TASK_ID=${SLURM_ARRAY_TASK_ID:-1}
-PARAM_LINE=$(sed -n "${TASK_ID}p" models_log.csv)
+PARAM_LINE=$(sed -n "${TASK_ID}p" model_log.csv)
 IFS=',' read -r MODEL <<< "$PARAM_LINE"
 MODEL=${MODEL//\'/}
 echo "Testing model: $MODEL"
