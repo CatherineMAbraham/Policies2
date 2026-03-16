@@ -53,6 +53,7 @@ def train(threshold_pos=0.001,
           num_springs=3,
           contact_type="None",
           ran='1',
+          youngs_modulus=1e7,
           log=True):
 
     commit = get_git_commit_hash(repo_path)
@@ -66,11 +67,11 @@ def train(threshold_pos=0.001,
     num_springs = num_springs
     contact_type = contact_type
     #print(contact_type)
-    name = f'{softtissue}_{train_date}_{num_springs}_{contact_type}_{ran}'
+    name = f'{softtissue}_{train_date}_{num_springs}_{youngs_modulus}_{ran}'
     model_name = f'model-{name}'
     if log==1:
         wandb.init(project="Tissue", name = (name),notes= (f"Git Commit: {commit}"),sync_tensorboard=True, save_code=True)  # Initialize W&B
-    print((f'{softtissue}-{train_date}-{num_springs}-{contact_type}-{ran}'))
+    print((f'{softtissue}-{train_date}-{num_springs}-{youngs_modulus}-{ran}'))
     env_kwargs = {
         'reward_type': 'sparse',
         'max_steps': 100,
@@ -87,6 +88,7 @@ def train(threshold_pos=0.001,
         'number_of_springs':num_springs,
         'softtissue':softtissue,
         'test': False,
+        'youngs_modulus': youngs_modulus,
         'render_mode': None}
         #"0.025 -0.04 0" rpy="0 1.57 0"
     
@@ -147,6 +149,7 @@ if __name__ == "__main__":
     parser.add_argument('--softtissue', type=str, default="spring", help='Soft Tissue Type.')
     parser.add_argument('--num_springs', type=int, default=3, help='Number of springs for the soft tissue.')
     parser.add_argument('--contact_type', type=int, default=0, help='Type of contact for the environment.')
+    parser.add_argument('--youngs_modulus', type=float, default=1e7, help='Young\'s modulus for the soft tissue.')
     parser.add_argument('--ran', type=str, default="1", help='Random seed for the run.')
     parser.add_argument('--log', type=int, default=1, help='Whether to log the training run to W&B.')
     args = parser.parse_args()
@@ -159,4 +162,5 @@ if __name__ == "__main__":
           contact_type=args.contact_type,
           softtissue=args.softtissue, 
           ran=args.ran,
-          log=args.log)
+          log=args.log,
+          youngs_modulus=args.youngs_modulus)

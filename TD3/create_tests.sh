@@ -12,8 +12,8 @@ for tissue in "spring"; do
     fi
 
     for num in "${options[@]}"; do
-        for contact in "0"; do
-            echo "$tissue,$num,$contact" >> tests.csv
+        for ym in "1e7" "5e7" "2e7" "1e8"; do
+            echo "$tissue,$num,$ym" >> tests.csv
         done
     done
 done
