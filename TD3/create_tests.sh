@@ -4,7 +4,7 @@
 > tests.csv
 
 # Generate combinations of tissue option, number of springs
-for tissue in "spring" "None"; do
+for tissue in "spring"; do
     if [ "$tissue" = "spring" ]; then
         options=("1" "3" "5" "10")
     else
@@ -12,7 +12,7 @@ for tissue in "spring" "None"; do
     fi
 
     for num in "${options[@]}"; do
-        for contact in "0" "1"; do
+        for contact in "0"; do
             echo "$tissue,$num,$contact" >> tests.csv
         done
     done

@@ -9,6 +9,7 @@ import numpy as np
 
 from stable_baselines3.common.logger import Logger
 from stable_baselines3.common.callbacks import BaseCallback, EvalCallback
+import wandb
 class StopTrainingOnSuccessRate(BaseCallback):
     """
     Stop the training early if there is no new best model (new best mean reward) after more than N consecutive evaluations.
@@ -61,6 +62,8 @@ class StopTrainingOnSuccessRate(BaseCallback):
                     f.write(f'{model_path}\n')
                 if self.verbose >= 1:
                     print(f"New best success rate: {self.best_success_rate:.2f} - model saved to {model_path}")
+                
+                wandb.summary['best_success_rate'] = self.best_success_rate
             else:
                 # Not a new best — count as no-improvement only after threshold was ever met
                 if self.threshold_met:
