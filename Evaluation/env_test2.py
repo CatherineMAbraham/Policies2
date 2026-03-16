@@ -22,7 +22,7 @@ def multiple_envs(model_path,
                   num_eps=100,
                   log=True):
         #Find the second last value in the model string 
-        contact_model= model_path.split('-')[-2]
+        contact_model= model_path.split('-')[-3]
         if contact_model == '0' :
                 contact_type = 0
         else:
