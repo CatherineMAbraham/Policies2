@@ -46,7 +46,7 @@ def multiple_envs(model_path,
                 'maxforce': maxforce,
                 'contact_type' : contact_type,
                 'start_pos' : 'home',
-                'render_mode': 'human',
+                'render_mode': None,
                 'test': True,}
 
         env = make_vec_env('gym_fracture:softsurg-v0', n_envs=n_envs, env_kwargs=env_kwargs,vec_env_cls=SubprocVecEnv)
