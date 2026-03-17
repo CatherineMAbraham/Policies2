@@ -50,7 +50,7 @@ def multiple_envs(model_path,
                 'test': True,}
 
         env = make_vec_env('gym_fracture:softsurg-v0', n_envs=n_envs, env_kwargs=env_kwargs,vec_env_cls=SubprocVecEnv)
-        model_path2 = model_path#os.path.join("/users/cop21cma/Policies2/TD3/", model_path)
+        model_path2 = os.path.join("/users/cop21cma/Policies2/TD3/", model_path)
         
         env = VecNormalize.load(f"{model_path2}/vec_normalize.pkl", env) # Register the environment
         env.training = False
