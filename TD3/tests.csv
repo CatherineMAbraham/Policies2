@@ -1,8 +1,4 @@
-spring,1,1e7
-spring,1,5e7
-spring,1,2e7
-spring,1,1e8
-spring,3,1e7
-spring,3,5e7
-spring,3,2e7
-spring,3,1e8
+spring,1e6
+spring,5e7
+spring,1e7
+None,1e7

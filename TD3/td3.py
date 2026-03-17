@@ -89,7 +89,7 @@ def train(threshold_pos=0.001,
         'softtissue':softtissue,
         'test': False,
         'youngs_modulus': youngs_modulus,
-        'render_mode': None}
+        'render_mode': 'human'}
         #"0.025 -0.04 0" rpy="0 1.57 0"
     
     env = make_vec_env('gym_fracture:softsurg-v0', env_kwargs=env_kwargs, n_envs=1,vec_env_cls=SubprocVecEnv)
@@ -121,11 +121,11 @@ def train(threshold_pos=0.001,
     eval_env = VecNormalize(eval_env, norm_obs=True, norm_reward=False)
     log_callback1 = log_callback.CustomCallback()
     success_callback = StopTrainingOnSuccessRate(vec_env=eval_env, 
-                                                 max_no_improvement_evals=20, 
-                                                 success_threshold=0.8,  
-                                                 min_evals=10, verbose=1, 
-                                                 model_name = model_name,
-                                                 model_save_path=f'./best_models/{ran}')
+                                                    max_no_improvement_evals=20, 
+                                                    success_threshold=0.8,  
+                                                    min_evals=10, verbose=1, 
+                                                    model_name = model_name,
+                                                    model_save_path=f'./best_models/{ran}')
     eval_callback = EvalCallback(eval_env,  eval_freq=10000,
                                 deterministic=True, n_eval_episodes=50,
                                 callback_after_eval=success_callback)
@@ -149,7 +149,7 @@ if __name__ == "__main__":
     parser.add_argument('--softtissue', type=str, default="spring", help='Soft Tissue Type.')
     parser.add_argument('--num_springs', type=int, default=3, help='Number of springs for the soft tissue.')
     parser.add_argument('--contact_type', type=int, default=0, help='Type of contact for the environment.')
-    parser.add_argument('--youngs_modulus', type=float, default=1e7, help='Young\'s modulus for the soft tissue.')
+    parser.add_argument('--youngs_modulus', type=float, default=1e6, help='Young\'s modulus for the soft tissue.')
     parser.add_argument('--ran', type=str, default="1", help='Random seed for the run.')
     parser.add_argument('--log', type=int, default=1, help='Whether to log the training run to W&B.')
     args = parser.parse_args()
