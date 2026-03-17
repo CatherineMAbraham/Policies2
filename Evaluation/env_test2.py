@@ -18,6 +18,8 @@ def multiple_envs(model_path,
                   threshold_ori=0.08,
                   maxforce=5,
                   softtissue='spring',
+                  youngs_modulus=1e7,
+                  num_springs=3,
                   n_envs=1,
                   num_eps=100,
                   log=True):
@@ -38,15 +40,17 @@ def multiple_envs(model_path,
                 'dr':0.01,
                 'distance_threshold_ori': threshold_ori,
                 'softtissue': softtissue,
+                'number_of_springs': num_springs,
+                'youngs_modulus': youngs_modulus,
                 'action_type': 'euler',
                 'maxforce': maxforce,
                 'contact_type' : contact_type,
                 'start_pos' : 'home',
-                'render_mode': None,
+                'render_mode': 'human',
                 'test': True,}
 
         env = make_vec_env('gym_fracture:softsurg-v0', n_envs=n_envs, env_kwargs=env_kwargs,vec_env_cls=SubprocVecEnv)
-        model_path2 = os.path.join("/users/cop21cma/Policies2/TD3/", model_path)
+        model_path2 = model_path#os.path.join("/users/cop21cma/Policies2/TD3/", model_path)
         
         env = VecNormalize.load(f"{model_path2}/vec_normalize.pkl", env) # Register the environment
         env.training = False
@@ -121,6 +125,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Test the trained model on multiple environments")
     parser.add_argument("--model_path", type=str, help="Path to the trained model zip file")
     parser.add_argument('--maxforce', type=float, default=4, help='Force threshold for the environment.')
+    parser.add_argument('--youngs_modulus', type=float, default=1e7, help='Young\'s modulus for the soft tissue.')
+    parser.add_argument('--num_springs', type=int, default=3, help='Number of springs for the soft tissue.')
     parser.add_argument('--softtissue', type=str, default="spring", help='Soft Tissue Type.')
     parser.add_argument("--threshold_pos", type=float, default=0.001, help="Position threshold for success")
     parser.add_argument("--threshold_ori", type=float, default=0.08, help="Orientation threshold for success")
@@ -135,7 +141,9 @@ if __name__ == "__main__":
     multiple_envs(
     model_path=args.model_path,
     maxforce=args.maxforce,
+    num_springs=args.num_springs,
     softtissue=args.softtissue,
+    youngs_modulus=args.youngs_modulus,
     threshold_pos=args.threshold_pos,
     threshold_ori=args.threshold_ori,
     n_envs=args.n_envs,
