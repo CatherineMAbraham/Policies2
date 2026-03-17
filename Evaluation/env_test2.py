@@ -44,7 +44,7 @@ def multiple_envs(model_path,
                 'youngs_modulus': youngs_modulus,
                 'action_type': 'euler',
                 'maxforce': maxforce,
-                'contact_type' : contact_type,
+                'contact_type' : 0,
                 'start_pos' : 'home',
                 'render_mode': None,
                 'test': True,}
