@@ -17,4 +17,4 @@ source activate softsurg
 # Read the correct line from params_curr_compare.csv
 
 # Run the script
-srun --export=ALL python td3.py --threshold_pos 0.001 --threshold_ori 5 --action_type euler --maxforce 50000000 --softtissue None --contact_type 0 --ran $TASK_ID --log 1
+srun --export=ALL python td3.py --threshold_pos 0.001 --threshold_ori 5 --action_type euler --maxforce 50000000 --softtissue None --contact_type 0 --log 1

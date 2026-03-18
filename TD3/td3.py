@@ -67,11 +67,11 @@ def train(threshold_pos=0.001,
     num_springs = num_springs
     contact_type = contact_type
     #print(contact_type)
-    name = f'{softtissue}_{train_date}_{num_springs}_{youngs_modulus}_{ran}'
+    name = f'{softtissue}_{train_date}'
     model_name = f'model-{name}'
     if log==1:
         wandb.init(project="Tissue", name = (name),notes= (f"Git Commit: {commit}"),sync_tensorboard=True, save_code=True)  # Initialize W&B
-    print((f'{softtissue}-{train_date}-{num_springs}-{youngs_modulus}-{ran}'))
+    #print((f'{softtissue}-{train_date}-{num_springs}-{youngs_modulus}-{ran}'))
     env_kwargs = {
         'reward_type': 'sparse',
         'max_steps': 100,
