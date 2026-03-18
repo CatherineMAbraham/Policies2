@@ -115,8 +115,25 @@ def train(threshold_pos=0.001,
                 seed=42, action_noise=action_noise,tensorboard_log='./logs/{ran}')
 
 
-   
-    eval_env=make_vec_env('gym_fracture:softsurg-v0', env_kwargs=env_kwargs,vec_env_cls=SubprocVecEnv)
+    eval_env_kwargs = {
+            'reward_type': 'sparse',
+            'max_steps': 100,
+            'horizon': 'variable',
+            'obs_type': 'dict',
+            'distance_threshold_pos': threshold_pos,
+            'dt': 0.001,
+            'dr':0.01,
+            'distance_threshold_ori': threshold_ori,
+            'action_type': action_type,
+            'start_pos' : 'home',
+            'maxforce': maxforce,
+            'contact_type' :contact_type,
+            'number_of_springs':num_springs,
+            'softtissue':softtissue,
+            'test': False,
+            'youngs_modulus': youngs_modulus,
+            'render_mode': None}
+    eval_env=make_vec_env('gym_fracture:softsurg-v0', env_kwargs=eval_env_kwargs,vec_env_cls=SubprocVecEnv)
     
     eval_env = VecNormalize(eval_env, norm_obs=True, norm_reward=False)
     log_callback1 = log_callback.CustomCallback()
