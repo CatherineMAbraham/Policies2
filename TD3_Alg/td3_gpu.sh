@@ -11,6 +11,7 @@
 #SBATCH --time=28:00:00
 #SBATCH --output=out_%A_%a.out
 
+
 module load Anaconda3/2024.02-1
 
 source activate softsurg
@@ -20,4 +21,5 @@ PARAM_LINE=$(sed -n "${TASK_ID}p" tests.csv)
 IFS=',' read -r TISSUE YM <<< "$PARAM_LINE"
 echo "Running test with: Tissue=$TISSUE, Youngs_Modulus=$YM"
 # Run the script
-srun --export=ALL python td3.py --threshold_pos 0.002 --threshold_ori 5 --action_type euler --maxforce 5 --softtissue $TISSUE --youngs_modulus "$YM" --contact_type 0 --ran $TASK_ID --log 1
+#srun --export=ALL 
+python td3.py --threshold_pos 0.002 --threshold_ori 5 --action_type euler --maxforce 5 --softtissue $TISSUE --youngs_modulus "$YM" --contact_type 0 --ran $TASK_ID --log 0

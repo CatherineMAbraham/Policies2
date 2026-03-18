@@ -58,6 +58,8 @@ class StopTrainingOnSuccessRate(BaseCallback):
                 self.model.save(os.path.join(model_path, self.model_name))
                 stats_path = os.path.join(self.model_save_path, self.model_name, "vec_normalize.pkl")
                 self.vec_env.save(stats_path)
+                rb_path = os.path.join(self.model_save_path, self.model_name, f"{self.model_name}-rb.zip")
+                self.model.save_replay_buffer(rb_path)
                 with open('/users/cop21cma/Policies2/Evaluation/model_log.csv', 'a') as f:
                     f.write(f'{model_path}\n')
                 if self.verbose >= 1:
