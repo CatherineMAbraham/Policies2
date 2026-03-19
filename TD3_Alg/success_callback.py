@@ -60,7 +60,8 @@ class StopTrainingOnSuccessRate(BaseCallback):
                 self.vec_env.save(stats_path)
                 rb_path = os.path.join(self.model_save_path, self.model_name, f"{self.model_name}-rb.zip")
                 self.model.save_replay_buffer(rb_path)
-                with open('/users/cop21cma/Policies2/Evaluation/model_log.csv', 'a') as f:
+                model_log_path = os.path.join(os.getcwd(), 'model_log.csv')
+                with open(model_log_path, 'a') as f:
                     f.write(f'{model_path}\n')
                 if self.verbose >= 1:
                     print(f"New best success rate: {self.best_success_rate:.2f} - model saved to {model_path}")
