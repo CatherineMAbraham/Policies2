@@ -117,20 +117,28 @@ def train(threshold_pos=0.001,
     model_dir = Path(model_path)
     ##find file that starts with model but does not end in rb 
     model_candidates = sorted(
-            [p for p in model_dir.glob("model*") if p.is_file() and not p.name.endswith('-rb.zip')],
+            [p for p in model_dir.glob("model*") if p.is_file()],# and not p.name.endswith('-rb.zip')],
             key=lambda p: p.stat().st_mtime,
             reverse=True,
     )
     if not model_candidates:
             raise FileNotFoundError(f"No model files starting with 'model' found in {model_dir}")
-
-    selected_model = model_candidates[0]
+    # model that doesnt end in rb 
+    for candidate in model_candidates:
+        if not candidate.name.endswith('-rb.zip'):
+            selected_model = candidate
+        elif candidate.name.endswith('-rb.zip'):
+            replay_buffer_model = candidate
+            model.load_replay_buffer(replay_buffer_model)
+            print(f"Loaded replay buffer from {replay_buffer_model}")
+    print(f"Selected model: {selected_model}")
+    #print(f"Selected replay buffer model: {replay_buffer_model}")
     model = TD3.load(str(selected_model), env=env)
 
-   
-    if os.path.exists(f'{model_path}-rb.zip'):
-        model.load_replay_buffer(f'{model_path}_replay')
-        print(f"Loaded replay buffer from {model_path}_replay")
+    
+    # if os.path.exists(f'{model_path}-rb.zip'):
+    #     model.load_replay_buffer(f'{model_path}_replay')
+    #     print(f"Loaded replay buffer from {model_path}_replay")
     #model.seed(seed_value)
     model.seed= 42
   
