@@ -101,7 +101,7 @@ def train(threshold_pos=0.001,
         'softtissue':softtissue,
         'test': False,
         'youngs_modulus': youngs_modulus,
-        'render_mode': 'human'}
+        'render_mode': None}
 
 
     #vec_env=make_vec_env('gym_fracture:softsurg-v0', env_kwargs=env_kwargs, n_envs=1,vec_env_cls=SubprocVecEnv)
