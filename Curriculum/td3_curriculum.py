@@ -128,7 +128,8 @@ def train(threshold_pos=0.001,
 
    
     if os.path.exists(f'{model_path}_replay'):
-        model.load_replay_buffer(f'{model_path}-rb')
+        model.load_replay_buffer(f'{model_path}_replay')
+        print(f"Loaded replay buffer from {model_path}_replay")
     #model.seed(seed_value)
     model.seed= 42
   
@@ -139,7 +140,7 @@ def train(threshold_pos=0.001,
     eval_env = VecNormalize(eval_env, norm_obs=True, norm_reward=False)
     log_callback1 = log_callback.CustomCallback()
     success_callback = StopTrainingOnSuccessRate(vec_env=eval_env, 
-                                                    max_no_improvement_evals=20, 
+                                                    max_no_improvement_evals=10, 
                                                     success_threshold=0.8,  
                                                     min_evals=10, verbose=1, 
                                                     model_name = model_name,
@@ -148,7 +149,7 @@ def train(threshold_pos=0.001,
                                 deterministic=True, n_eval_episodes=50,
                                 callback_after_eval=success_callback)
 
-    model.learn(2_500_000)#, callback=[eval_callback,log_callback1])
+    model.learn(2_500_000, callback=[eval_callback,log_callback1])
     model.save(f'./{model_name}')
     model.save_replay_buffer(f'./{model_name}_replay')
     #save model name in log file
