@@ -22,4 +22,4 @@ echo "Running test with model path: $MODEL_PATH"
 
 # Run the script
 #srun --export=ALL 
-python td3_curriculum.py --threshold_pos 0.001 --threshold_ori 5 --action_type euler --maxforce 50000 --softtissue None --model $MODEL_PATH --contact_type 0 --log 0
+python td3_curriculum.py --threshold_pos 0.001 --threshold_ori 5 --action_type euler --maxforce 5 --softtissue spring --model $MODEL_PATH --contact_type 0 --log 1
