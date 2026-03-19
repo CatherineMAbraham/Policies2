@@ -127,14 +127,15 @@ def train(threshold_pos=0.001,
     for candidate in model_candidates:
         if not candidate.name.endswith('-rb.zip'):
             selected_model = candidate
+            model = TD3.load(str(selected_model), env=env)
+
         elif candidate.name.endswith('-rb.zip'):
             replay_buffer_model = candidate
             model.load_replay_buffer(replay_buffer_model)
             print(f"Loaded replay buffer from {replay_buffer_model}")
     print(f"Selected model: {selected_model}")
     #print(f"Selected replay buffer model: {replay_buffer_model}")
-    model = TD3.load(str(selected_model), env=env)
-
+    
     
     # if os.path.exists(f'{model_path}-rb.zip'):
     #     model.load_replay_buffer(f'{model_path}_replay')
