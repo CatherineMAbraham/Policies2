@@ -115,8 +115,9 @@ def train(threshold_pos=0.001,
 
     policy_kwargs = dict(net_arch=[256, 256,256])#, activation_fn='relu')
     model_dir = Path(model_path)
+    ##find file that starts with model but does not end in rb 
     model_candidates = sorted(
-            [p for p in model_dir.glob("model*") if p.is_file()],
+            [p for p in model_dir.glob("model*") if p.is_file() and not p.name.endswith('-rb.zip')],
             key=lambda p: p.stat().st_mtime,
             reverse=True,
     )
@@ -127,7 +128,7 @@ def train(threshold_pos=0.001,
     model = TD3.load(str(selected_model), env=env)
 
    
-    if os.path.exists(f'{model_path}_replay'):
+    if os.path.exists(f'{model_path}-rb.zip'):
         model.load_replay_buffer(f'{model_path}_replay')
         print(f"Loaded replay buffer from {model_path}_replay")
     #model.seed(seed_value)
