@@ -24,12 +24,12 @@ def multiple_envs(model_path,
                   num_eps=100,
                   log=True):
         #Find the second last value in the model string 
-        contact_model= model_path.split('_')[-2]
+        #contact_model= model_path.split('_')[-2]
         #print(f"Contact model from path: {contact_model}")
-        if contact_model == '0' :
-                contact_type = 0
-        else:
-                contact_type = 1
+        # if contact_model == '0' :
+        #         contact_type = 0
+        # else:
+        #         contact_type = 1
         env_kwargs = {
                 'reward_type': 'sparse',
                 'max_steps': 100,
@@ -43,21 +43,21 @@ def multiple_envs(model_path,
                 'number_of_springs': num_springs,
                 'youngs_modulus': youngs_modulus,
                 'action_type': 'euler',
-                'maxforce': maxforce,
+                'maxforce': 10,
                 'contact_type' : 0,
                 'start_pos' : 'home',
-                'render_mode': None,
+                'render_mode': 'human',
                 'test': True,}
 
         env = make_vec_env('gym_fracture:softsurg-v0', n_envs=n_envs, env_kwargs=env_kwargs,vec_env_cls=SubprocVecEnv)
-        model_path2 = os.path.join("/users/cop21cma/Policies2/TD3/", model_path)
-        
-        env = VecNormalize.load(f"{model_path2}/vec_normalize.pkl", env) # Register the environment
+        #model_path2 = os.path.join("/users/cop21cma/Policies2/TD3/", model_path)
+        #model_path2= model #'/home/catherine/Policies2/Curriculum/model-spring_03190722'#"/home/catherine/Policies2/Evaluation/best_models/1/model-spring_03140755_1_0_1"
+        env = VecNormalize.load(f"{model_path}/vec_normalize.pkl", env) # Register the environment
         env.training = False
         env.norm_reward = False
-        model_dir = Path(model_path2)
+        model_dir = Path(model_path)
         model_candidates = sorted(
-                [p for p in model_dir.glob("model*") if p.is_file()],
+                [p for p in model_dir.glob("model*") if p.is_file() and not p.name.endswith("-rb.zip")],
                 key=lambda p: p.stat().st_mtime,
                 reverse=True,
         )
@@ -125,19 +125,20 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Test the trained model on multiple environments")
     parser.add_argument("--model_path", type=str, help="Path to the trained model zip file")
     parser.add_argument('--maxforce', type=float, default=4, help='Force threshold for the environment.')
-    parser.add_argument('--youngs_modulus', type=float, default=1e7, help='Young\'s modulus for the soft tissue.')
+    parser.add_argument('--youngs_modulus', type=float, default=1e6, help='Young\'s modulus for the soft tissue.')
     parser.add_argument('--num_springs', type=int, default=3, help='Number of springs for the soft tissue.')
     parser.add_argument('--softtissue', type=str, default="spring", help='Soft Tissue Type.')
     parser.add_argument("--threshold_pos", type=float, default=0.001, help="Position threshold for success")
     parser.add_argument("--threshold_ori", type=float, default=0.08, help="Orientation threshold for success")
     parser.add_argument("--n_envs", type=int, default=1, help="Number of parallel environments to test on")
     parser.add_argument("--num_eps", type=int, default=100, help="Number of episodes to collect data for")
-    parser.add_argument("--log", type=int, default=1, help="Whether to log results to Weights & Biases")
+    parser.add_argument("--log", type=int, default=0, help="Whether to log results to Weights & Biases")
     args = parser.parse_args()
     #remove everything before model in the model path
-    model_name = args.model_path.split("/")[-1].split(".")[0]
-    if args.log==1:
-        wandb.init(project="softsurg", name=f"test_{model_name}")
+    #model_name = args.model_path.split("/")[-1].split(".")[0]
+    
+#     if args.log==1:
+#         wandb.init(project="softsurg", name=f"test_{model_name}")
     multiple_envs(
     model_path=args.model_path,
     maxforce=args.maxforce,

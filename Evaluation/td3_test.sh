@@ -19,4 +19,5 @@ PARAM_LINE=$(sed -n "${TASK_ID}p" model_log.csv)
 IFS=',' read -r MODEL <<< "$PARAM_LINE"
 MODEL=${MODEL//\'/}
 echo "Testing model: $MODEL"
-srun --export=ALL python env_test2.py --num_eps 10000 --n_envs 10 --model_path "$MODEL" --maxforce 3.5 --softtissue soft --log 1
+#srun --export=ALL 
+python env_test2.py --num_eps 10000 --n_envs 1 --model_path "$MODEL" --maxforce 3.5 --softtissue soft --log 0
