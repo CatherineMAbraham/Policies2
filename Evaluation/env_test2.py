@@ -137,8 +137,8 @@ if __name__ == "__main__":
     #remove everything before model in the model path
     #model_name = args.model_path.split("/")[-1].split(".")[0]
     
-#     if args.log==1:
-#         wandb.init(project="softsurg", name=f"test_{model_name}")
+    if args.log==1:
+        wandb.init(project="softsurg", name=f"test_seed_{args.model_path.split('/')[-1].split('.')[0]}")
     multiple_envs(
     model_path=args.model_path,
     maxforce=args.maxforce,
