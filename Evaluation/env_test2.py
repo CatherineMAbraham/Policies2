@@ -43,10 +43,10 @@ def multiple_envs(model_path,
                 'number_of_springs': num_springs,
                 'youngs_modulus': youngs_modulus,
                 'action_type': 'euler',
-                'maxforce': 10,
+                'maxforce': maxforce,
                 'contact_type' : 0,
                 'start_pos' : 'home',
-                'render_mode': None,
+                'render_mode': 'None',
                 'test': True,}
 
         env = make_vec_env('gym_fracture:softsurg-v0', n_envs=n_envs, env_kwargs=env_kwargs,vec_env_cls=SubprocVecEnv)
