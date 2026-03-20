@@ -5,8 +5,7 @@
 #SBATCH --qos=gpu
 #SBATCH --gres=gpu:1
 #SBATCH --ntasks=1            # 4 agents total
-#SBATCH --cpus-per-task=10      # 4 CPUs per agent
-#SBATCH --array=1-10
+#SBATCH --cpus-per-task=10     # 4 CPUs per agent
 #SBATCH --mem=20G              # 8GB RAM per agent
 #SBATCH --time=02:00:00
 
@@ -21,4 +20,4 @@ IFS=',' read -r MODEL <<< "$PARAM_LINE"
 MODEL=${MODEL//\'/}
 echo "Testing model: $MODEL"
 #srun --export=ALL 
-python env_test2.py --num_eps 10000 --n_envs 1 --model_path "$MODEL" --maxforce 5 --softtissue soft --youngs_modulus 1e7 --log 1
+python env_test2.py --num_eps 10000 --n_envs 10 --model_path "$MODEL" --maxforce 5 --softtissue soft --youngs_modulus 1e7 --log 1
