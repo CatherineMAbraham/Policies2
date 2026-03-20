@@ -16,4 +16,4 @@ IFS=',' read -r MODEL <<< "$PARAM_LINE"
 MODEL=${MODEL//\'/}
 echo "Testing model: $MODEL"
 #srun --export=ALL 
-python env_test2.py --num_eps 1000 --n_envs 1 --model_path "$MODEL" --maxforce 3.5 --softtissue spring --youngs_modulus 1e7 --log 1
+python env_test2.py --num_eps 1000 --n_envs 1 --model_path "$MODEL" --maxforce 20 --softtissue soft --youngs_modulus 1e7 --log 1
