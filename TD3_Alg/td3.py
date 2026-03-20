@@ -13,7 +13,7 @@ import argparse
 import log_callback
 from success_callback import StopTrainingOnSuccessRate
 #repo_path = "/home/catherine/FractureGym/fracturesurgeryenv"
-repo_path = "/users/cop21cma/FracSoftGym/fracturesurgeryenv"
+repo_paths = ["/users/cop21cma/FracSoftGym/fracturesurgeryenv", "/home/catherine/FractureGym/fracturesurgeryenv",'/home/catherine/FractureSoftGym/fracturesurgeryenv/']
 def get_git_commit_hash(repo_path):
     try:
         repo = Repo(repo_path, search_parent_directories=True)
@@ -56,7 +56,14 @@ def train(threshold_pos=0.001,
           youngs_modulus=1e6,
           log=True):
 
-    commit = get_git_commit_hash(repo_path)
+    for repo_path in repo_paths:
+        try:
+            commit = get_git_commit_hash(repo_path)
+            if commit is not None:
+                print(f"Git commit hash for repository at {repo_path}: {commit}")
+                break
+        except Exception as e: print(f"Could not get commit hash for repository at {repo_path}: {e}")
+        
     x = datetime.datetime.now()
     train_date = x.strftime('%m%d%H%M')
     action_type = action_type# 'fouractions'#'pos_only' #action_type
@@ -138,9 +145,9 @@ def train(threshold_pos=0.001,
     eval_env = VecNormalize(eval_env, norm_obs=True, norm_reward=False)
     log_callback1 = log_callback.CustomCallback()
     success_callback = StopTrainingOnSuccessRate(vec_env=eval_env, 
-                                                    max_no_improvement_evals=10, 
+                                                    max_no_improvement_evals=5, 
                                                     success_threshold=0.8,  
-                                                    min_evals=10, verbose=1, 
+                                                    min_evals=5, verbose=1, 
                                                     model_name = model_name,
                                                     model_save_path=f'./best_models/{ran}')
     eval_callback = EvalCallback(eval_env,  eval_freq=10000,
@@ -166,7 +173,7 @@ if __name__ == "__main__":
     parser.add_argument('--softtissue', type=str, default="spring", help='Soft Tissue Type.')
     parser.add_argument('--num_springs', type=int, default=3, help='Number of springs for the soft tissue.')
     parser.add_argument('--contact_type', type=int, default=0, help='Type of contact for the environment.')
-    parser.add_argument('--youngs_modulus', type=float, default=1e6, help='Young\'s modulus for the soft tissue.')
+    parser.add_argument('--youngs_modulus', type=float, default=1e7, help='Young\'s modulus for the soft tissue.')
     parser.add_argument('--ran', type=str, default="1", help='Random seed for the run.')
     parser.add_argument('--log', type=int, default=1, help='Whether to log the training run to W&B.')
     args = parser.parse_args()
