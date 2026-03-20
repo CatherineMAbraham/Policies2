@@ -95,7 +95,7 @@ def multiple_envs(model_path,
                                 contacts.append(has_contact)
                                 
                                 episodes_collected += 1
-                                print(f"[{episodes_collected}/{num}] Env {i} Success: {is_success} Force: {info.get('force')} Contact: {has_contact}")
+                                print(f"[{episodes_collected}/{num}] Env {i} Success: {is_success} Force: {info.get('force')} Pos: {info.get('pos_distance')} Angle: {info.get('angle')} Contact: {has_contact}")
                                 if log==1:
                                     #table = wandb.Table(data = is_success,columns=["Episode", "Success"])
                                     #histogram = wandb.plot.Histogram(table,value='Success', title="Success Distribution")
