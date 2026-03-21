@@ -45,7 +45,9 @@ class CustomCallback(BaseCallback):
                 if self.locals['dones'][j]:
                     wandb.log({f'max_force{j}': infos[j].get('force', 0), 
                                f'Holding{j}': infos[j].get('isHolding', 0),
-                               f'Contact{j}': infos[j].get('contact', 0),})
+                               f'Contact{j}': infos[j].get('contact', 0),
+                               f'Position Distance{j}': infos[j].get('pos_distance', 0),
+                               f'Angle Distance{j}': infos[j].get('angle', 0)})
                     #print(f"Max Force{j}: {infos[j].get('force')}, Contact{j}: {infos[j].get('contact')}")
         return True
 
