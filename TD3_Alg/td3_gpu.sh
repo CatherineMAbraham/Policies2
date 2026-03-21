@@ -7,8 +7,8 @@
 #SBATCH --ntasks=1            # 4 agents total
 #SBATCH --cpus-per-task=1      # 4 CPUs per agent
 #SBATCH --mem=8G              # 8GB RAM per agent
-#SBATCH --array=1-2
-#SBATCH --time=28:00:00
+#SBATCH --array=1-8
+#SBATCH --time=15:00:00
 #SBATCH --output=out_%A_%a.out
 
 
@@ -18,7 +18,7 @@ source activate softsurg
 # Read the correct line from params_curr_compare.csv
 TASK_ID=${SLURM_ARRAY_TASK_ID:-1}
 PARAM_LINE=$(sed -n "${TASK_ID}p" tests.csv)
-IFS=',' read -r TISSUE<<< "$PARAM_LINE"
-echo "Running test with: Tissue=$TISSUE"
+IFS=',' read -r TISSUE YOUNGS_MODULUS CONTACT_TYPE <<< "$PARAM_LINE"
+echo "Running test with: Tissue=$TISSUE, Young's Modulus=$YOUNGS_MODULUS, Contact Type=$CONTACT_TYPE"
 # Run the script
-srun --export=ALL python td3.py --threshold_pos 0.001 --threshold_ori 5 --action_type euler --maxforce 5 --softtissue $TISSUE --youngs_modulus 1e7 --contact_type 0 --ran $TASK_ID --log 1
+srun --export=ALL python td3.py --threshold_pos 0.001 --threshold_ori 4 --action_type euler --maxforce 4 --softtissue $TISSUE --youngs_modulus $YOUNGS_MODULUS --contact_type $CONTACT_TYPE --ran $TASK_ID --log 1
