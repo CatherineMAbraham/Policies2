@@ -21,4 +21,4 @@ PARAM_LINE=$(sed -n "${TASK_ID}p" tests.csv)
 IFS=',' read -r TISSUE YOUNGS_MODULUS CONTACT_TYPE <<< "$PARAM_LINE"
 echo "Running test with: Tissue=$TISSUE, Young's Modulus=$YOUNGS_MODULUS, Contact Type=$CONTACT_TYPE"
 # Run the script
-srun --export=ALL python td3.py --threshold_pos 0.001 --threshold_ori 4 --action_type euler --maxforce 4 --softtissue $TISSUE --youngs_modulus $YOUNGS_MODULUS --contact_type $CONTACT_TYPE --ran $TASK_ID --log 1
+srun --export=ALL python td3.py --threshold_pos 0.001 --threshold_ori 5 --action_type euler --maxforce 4 --softtissue $TISSUE --youngs_modulus $YOUNGS_MODULUS --contact_type $CONTACT_TYPE --ran $TASK_ID --log 1

@@ -94,7 +94,7 @@ def train(threshold_pos=0.001,
         'contact_type' :contact_type,
         'number_of_springs':num_springs,
         'softtissue':softtissue,
-        'test': True,
+        'test': False,
         'youngs_modulus': youngs_modulus,
         'render_mode': None}
         #"0.025 -0.04 0" rpy="0 1.57 0"
