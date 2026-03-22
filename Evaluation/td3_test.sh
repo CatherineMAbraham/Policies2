@@ -21,7 +21,7 @@ IFS=',' read -r MODEL <<< "$PARAM_LINE"
 MODEL=${MODEL//\'/}
 # Convert relative path to absolute
 if [[ "$MODEL" == /* ]]; then
-    FULL_MODEL_PATH=/users/cop21cma/Policies2"$MODEL"
+    FULL_MODEL_PATH=/users/cop21cma/Policies2/TD3_Alg"$MODEL"
 else
     FULL_MODEL_PATH=$MODEL
 fi
