@@ -6,7 +6,7 @@
 #SBATCH --gres=gpu:1
 #SBATCH --ntasks=1            # 4 agents total
 #SBATCH --cpus-per-task=10     # 4 CPUs per agent
-#SBATCH --array=1-5
+#SBATCH --array=1-2
 #SBATCH --mem=20G              # 8GB RAM per agent
 #SBATCH --time=02:00:00
 
