@@ -18,7 +18,7 @@ TASK_ID=${SLURM_ARRAY_TASK_ID:-1}
 PARAM_LINE=$(sed -n "${TASK_ID}p" model_log.csv)
 IFS=',' read -r MODEL <<< "$PARAM_LINE"
 MODEL=${MODEL//\'/}
-Convert relative path to absolute
+#Convert relative path to absolute
 if [[ "$MODEL" == /* ]]; then
     FULL_MODEL_PATH=/users/cop21cma/Policies2/TD3_Alg"$MODEL"
 else
