@@ -26,4 +26,4 @@ else
 fi
 echo "Testing model: $MODEL"
 #srun --export=ALL 
-python env_test2.py --num_eps 1000 --n_envs 10 --model_path "$MODEL" --maxforce 4 --softtissue soft --youngs_modulus 1e7 --log 1
+python env_test2.py --num_eps 1000 --n_envs 10 --model_path "$FULL_MODEL_PATH" --maxforce 4 --softtissue soft --youngs_modulus 1e7 --log 1
