@@ -4,16 +4,10 @@
 > tests.csv
 
 # Generate combinations of tissue option, number of springs
-for tissue in "spring" None; do
-    if [ "$tissue" = "spring"  ]; then
-        options=("1e7" "5e6" "1e6")
-    else
-        options=("1")
-    fi
-
-    for ym in "${options[@]}"; do
-        for max_force in "3" "3.5"; do
-            echo "$tissue,$ym,$max_force" >> tests.csv
+for tissue in "spring"; do
+    for ym in "1e6" "1e7" "5e6"; do
+        for num_springs in "3" "5" "10"; do
+            echo "$tissue,$ym,$num_springs" >> tests.csv
         done
     done
 done

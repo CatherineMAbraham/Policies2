@@ -74,7 +74,7 @@ def train(threshold_pos=0.001,
     num_springs = num_springs
     contact_type = contact_type
     #print(contact_type)
-    name = f'{softtissue}_{contact_type}_{youngs_modulus}_{train_date}'
+    name = f'{softtissue}_{num_springs}_{youngs_modulus}_{train_date}'
     model_name = f'model-{name}'
     if log==1:
         wandb.init(project="Tissue", name = (name),notes= (f"Git Commit: {commit}"),sync_tensorboard=True, save_code=True)  # Initialize W&B
@@ -92,11 +92,11 @@ def train(threshold_pos=0.001,
         'start_pos' : 'home',
         'maxforce': maxforce,
         'contact_type' :contact_type,
-        'number_of_springs':3,
+        'number_of_springs':num_springs,
         'softtissue':softtissue,
         'test': False,
         'youngs_modulus': youngs_modulus,
-        'render_mode': None}
+        'render_mode': 'human'}
         #"0.025 -0.04 0" rpy="0 1.57 0"
    
     env = make_vec_env('gym_fracture:softsurg-v0', env_kwargs=env_kwargs, n_envs=1,vec_env_cls=SubprocVecEnv)
