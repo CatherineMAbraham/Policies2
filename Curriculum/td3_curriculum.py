@@ -21,8 +21,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from TD3_Alg import log_callback
-from TD3_Alg.success_callback import StopTrainingOnSuccessRate
+from log_callback import log_callback
+from success_callback import StopTrainingOnSuccessRate
 import os
 #repo_path = "/home/catherine/FractureGym/fracturesurgeryenv"
 #repo_path="/users/cop21cma/FracSurg-Gym/fracturesurgeryenv"
@@ -77,7 +77,7 @@ def train(threshold_pos=0.001,
     threshold_pos = threshold_pos
     threshold_ori = np.deg2rad(threshold_ori)
    
-    model_path = os.path.join(os.getcwd(), model)
+    #model_path = os.path.join(os.getcwd(), model)
     model_name = f'model-{train_date}-{softtissue}-{maxforce}'
     print(f'Training with model {model}')
     if log ==1:
@@ -102,16 +102,16 @@ def train(threshold_pos=0.001,
         'test': False,
         'youngs_modulus': youngs_modulus,
         'render_mode': None}
-
+    model_path = model
 
     #vec_env=make_vec_env('gym_fracture:softsurg-v0', env_kwargs=env_kwargs, n_envs=1,vec_env_cls=SubprocVecEnv)
     env = make_vec_env('gym_fracture:softsurg-v0', env_kwargs=env_kwargs, n_envs=1,vec_env_cls=SubprocVecEnv)
-    env = VecNormalize(env, norm_obs=True, norm_reward=False)
-    #env = VecNormalize.load(f"{model_path}/vec_normalize.pkl", env) # Register the environment
+    #env = VecNormalize(env, norm_obs=True, norm_reward=False)
+    env = VecNormalize.load(f"{model_path}/vec_normalize.pkl", env) # Register the environment
     env.training = True
     env.norm_reward = False
-    action_noise = OrnsteinUhlenbeckActionNoise(mean=np.zeros(env.action_space.shape[0]),
-                                              sigma=0.02 * np.ones(env.action_space.shape[0]))
+    # action_noise = OrnsteinUhlenbeckActionNoise(mean=np.zeros(env.action_space.shape[0]),
+    #                                           sigma=0.02 * np.ones(env.action_space.shape[0]))
 
     policy_kwargs = dict(net_arch=[256, 256,256])#, activation_fn='relu')
     model_dir = Path(model_path)
@@ -150,9 +150,9 @@ def train(threshold_pos=0.001,
     eval_env = VecNormalize(eval_env, norm_obs=True, norm_reward=False)
     log_callback1 = log_callback.CustomCallback()
     success_callback = StopTrainingOnSuccessRate(vec_env=eval_env, 
-                                                    max_no_improvement_evals=10, 
+                                                    max_no_improvement_evals=5, 
                                                     success_threshold=0.8,  
-                                                    min_evals=10, verbose=1, 
+                                                    min_evals=1, verbose=1, 
                                                     model_name = model_name,
                                                     model_save_path=f'./best_models/{ran}')
     eval_callback = EvalCallback(eval_env,  eval_freq=10000,
