@@ -29,7 +29,7 @@ def multiple_envs(model_path,
         # if contact_model == '0' :
         #         contact_type = 0
         # else:
-        
+
         #         contact_type = 1
         env_kwargs = {
                 'reward_type': 'sparse',
@@ -47,7 +47,7 @@ def multiple_envs(model_path,
                 'maxforce': maxforce,
                 'contact_type' : 0,
                 'start_pos' : 'home',
-                'render_mode': None,
+                'render_mode': 'human',
                 'test': True,}
         # Remove . from beginning if present
         
@@ -76,6 +76,7 @@ def multiple_envs(model_path,
         episodes_collected = 0
         obs = env.reset()
         while episodes_collected < num:
+                eps = 0
                 action, _ = model.predict(obs, deterministic=True)
                 obs, reward, dones_array, info_list = env.step(action)
                 
@@ -99,11 +100,16 @@ def multiple_envs(model_path,
                                 
                                 episodes_collected += 1
                                 print(f"[{episodes_collected}/{num}] Env {i} Success: {is_success} Force: {info.get('force')} Pos: {info.get('pos_distance')} Angle: {info.get('angle')} Contact: {has_contact}, Success Rate: {sum(dones) / len(dones)}")
-                                if log==1:
+                                ## If force >50 do not log to wandb as it is an outlier and can skew the results
+                                # remove number of episodes collected from the success rate calculation in the log as well
+                                if info.get('force', 0) <= 50:
+                                       eps +=1
+                                if log==1 :
                                     #table = wandb.Table(data = is_success,columns=["Episode", "Success"])
                                     #histogram = wandb.plot.Histogram(table,value='Success', title="Success Distribution")
-                                    wandb.log({"Episode": episodes_collected,  "Contact": has_contact})
-                                    wandb.run.summary["final_success_rate"] = sum(dones) / len(dones)
+                                    wandb.log({"Episode": episodes_collected,  "Contact": has_contact, "force": info.get('force', 0), "Position Distance": info.get('pos_distance', 0), "Angle Distance": info.get('angle', 0), "Success": is_success, "Success Rate": sum(dones) / len(dones)})
+                                    if info.get('force', 0) <= 50:      
+                                        wandb.run.summary["final_success_rate"] = sum(dones) / eps
                                 if episodes_collected >= num:
                                         break
         success_no_contact = sum(1 for d, c in zip(dones, contacts) if d and not c)
