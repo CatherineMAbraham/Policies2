@@ -16,7 +16,7 @@ TASK_ID=${SLURM_ARRAY_TASK_ID:-1}
 MODEL_LINE=$(sed -n "${TASK_ID}p" model_paths.csv)
 IFS=',' read -r MODEL_PATH <<< "$MODEL_LINE"
 echo "Running test with model path: $MODEL_PATH"
-MODEL=${MODEL//\'/}
+MODEL=${MODEL_PATH//\'/}
 #Convert relative path to absolute
 if [[ "$MODEL" == /* ]]; then
     FULL_MODEL_PATH=/users/cop21cma/Policies2/TD3_Alg"$MODEL"
