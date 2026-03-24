@@ -29,6 +29,7 @@ def multiple_envs(model_path,
         # if contact_model == '0' :
         #         contact_type = 0
         # else:
+        
         #         contact_type = 1
         env_kwargs = {
                 'reward_type': 'sparse',
