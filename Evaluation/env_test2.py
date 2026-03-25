@@ -75,8 +75,9 @@ def multiple_envs(model_path,
         num = num_eps
         episodes_collected = 0
         obs = env.reset()
+        eps = 0
         while episodes_collected < num:
-                eps = 0
+                
                 action, _ = model.predict(obs, deterministic=True)
                 obs, reward, dones_array, info_list = env.step(action)
                 
