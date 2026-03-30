@@ -2,7 +2,7 @@ import gymnasium as gym
 from stable_baselines3 import TD3, HerReplayBuffer
 from stable_baselines3.common.noise import OrnsteinUhlenbeckActionNoise
 from stable_baselines3.common.callbacks import EvalCallback
-from stable_baselines3.common.vec_env import SubprocVecEnv, VecNormalize
+from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv, VecNormalize
 from stable_baselines3.common.env_util import make_vec_env
 import wandb
 import numpy as np
@@ -102,7 +102,7 @@ def train(threshold_pos=0.001,
         'render_mode': None}
         #"0.025 -0.04 0" rpy="0 1.57 0"
    
-    env = make_vec_env('gym_fracture:softsurg-v0', env_kwargs=env_kwargs, n_envs=1,vec_env_cls=SubprocVecEnv)
+    env = make_vec_env('gym_fracture:softsurg-v0', env_kwargs=env_kwargs, n_envs=1,vec_env_cls=DummyVecEnv)
     env = VecNormalize(env, norm_obs=True, norm_reward=False)
     action_noise = OrnsteinUhlenbeckActionNoise(mean=np.zeros(env.action_space.shape[0]),
                                               sigma=0.02 * np.ones(env.action_space.shape[0]))
@@ -158,5 +158,5 @@ def train(threshold_pos=0.001,
 
 
 if __name__ == "__main__":
-    sweep_id = "rnw7996h"
+    sweep_id = "hnzhbos7"
     wandb.agent(sweep_id, function=train, count=10)
