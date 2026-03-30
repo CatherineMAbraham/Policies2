@@ -115,7 +115,7 @@ def train(threshold_pos=0.001,
                 replay_buffer_kwargs=dict(n_sampled_goal=her_sampled_goal),
                 learning_rate=linear_schedule(learning_rate),
                 train_freq=train_freq,
-                buffer_size=batch_size,
+                buffer_size=1_000_000,
                 learning_starts= learning_starts,
                 batch_size=batch_size,
                 tau= tau,
@@ -151,7 +151,7 @@ def train(threshold_pos=0.001,
     # eval_callback = EvalCallback(eval_env,  eval_freq=10000,
     #                             deterministic=True, n_eval_episodes=50),
                                 
-    model.learn(500_000)#, callback=eval_callback)
+    model.learn(200_000)#, callback=eval_callback)
     #save model name in log file
     
 
