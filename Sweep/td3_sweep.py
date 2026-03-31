@@ -72,7 +72,7 @@ def train(threshold_pos=0.001,
     softtissue = 'spring'
     num_springs = 3
     contact_type = 0
-    youngs_modulus = 1e7
+    youngs_modulus = 1e6
    
     learning_rate = config.learning_rate
     gamma = config.gamma
@@ -158,5 +158,5 @@ def train(threshold_pos=0.001,
 
 
 if __name__ == "__main__":
-    sweep_id = "k8xt6jxh"
-    wandb.agent(sweep_id, function=train, count=1)
+    sweep_id = "lnbgu0aw"
+    wandb.agent(sweep_id, function=train, count=10)
