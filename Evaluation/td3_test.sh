@@ -7,7 +7,6 @@
 #SBATCH --ntasks=1            # 4 agents total
 #SBATCH --cpus-per-task=5     # 4 CPUs per agent
 #SBATCH --mem=20G              # 8GB RAM per agent
-#SBATCH --array=1-10
 #SBATCH --time=05:00:00
 
 
@@ -26,5 +25,4 @@ else
     FULL_MODEL_PATH=/"$MODEL"
 fi
 echo "Testing model: $MODEL"
-#srun --export=ALL 
-python env_test2.py --num_eps 1000 --n_envs 5 --model_path "$FULL_MODEL_PATH" --maxforce 4 --softtissue soft --youngs_modulus 1e7 --log 1
+srun --export=ALL python env_test2.py --num_eps 1000 --n_envs 5 --model_path "$FULL_MODEL_PATH" --maxforce 4 --softtissue soft --youngs_modulus 1e7 --log 1
