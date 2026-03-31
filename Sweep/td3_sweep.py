@@ -70,7 +70,7 @@ def train(threshold_pos=0.001,
     threshold_ori = np.deg2rad(5)
     maxforce = 4
     softtissue = 'spring'
-    num_springs = 5
+    num_springs = 3
     contact_type = 0
     youngs_modulus = 1e7
    
@@ -99,7 +99,7 @@ def train(threshold_pos=0.001,
         'softtissue':softtissue,
         'test': False,
         'youngs_modulus': youngs_modulus,
-        'render_mode': None}
+        'render_mode': 'human'}
         #"0.025 -0.04 0" rpy="0 1.57 0"
    
     env = make_vec_env('gym_fracture:softsurg-v0', env_kwargs=env_kwargs, n_envs=1,vec_env_cls=DummyVecEnv)
