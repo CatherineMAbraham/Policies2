@@ -180,7 +180,6 @@ if __name__ == "__main__":
     parser.add_argument('--youngs_modulus', type=float, default=1e7, help='Young\'s modulus for the soft tissue.')
     parser.add_argument('--ran', type=str, default="1", help='Random seed for the run.')
     parser.add_argument('--log', type=int, default=0, help='Whether to log the training run to W&B.')
-    parser.add_argument('--render_mode', type=str, default="human", help='Render mode for the environment.')
     parser.add_argument('--seed', type=int, default=0, help='Random seed for reproducibility.')
     args = parser.parse_args()
     train(threshold_pos=args.threshold_pos, 
@@ -194,5 +193,4 @@ if __name__ == "__main__":
           ran=args.ran,
           log=args.log,
           youngs_modulus=args.youngs_modulus,
-          render_mode=args.render_mode,
           seed=args.seed)
