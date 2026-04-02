@@ -54,13 +54,17 @@ def train(threshold_pos=0.001,
           contact_type="None",
           ran='1',
           youngs_modulus=1e6,
-          log=True):
-
+          log=True,
+          seed=0):
+    render_mode = render_mode
     for repo_path in repo_paths:
         try:
             commit = get_git_commit_hash(repo_path)
             if commit is not None:
                 print(f"Git commit hash for repository at {repo_path}: {commit}")
+                if repo_path == "/users/cop21cma/FracSoftGym/fracturesurgeryenv":
+                    render_mode = None
+                    log =1 
                 break
         except Exception as e: print(f"Could not get commit hash for repository at {repo_path}: {e}")
         
@@ -96,7 +100,7 @@ def train(threshold_pos=0.001,
         'softtissue':softtissue,
         'test': False,
         'youngs_modulus': youngs_modulus,
-        'render_mode': None}
+        'render_mode': render_mode}
         #"0.025 -0.04 0" rpy="0 1.57 0"
    
     env = make_vec_env('gym_fracture:softsurg-v0', env_kwargs=env_kwargs, n_envs=1,vec_env_cls=SubprocVecEnv)
@@ -109,17 +113,17 @@ def train(threshold_pos=0.001,
     model = TD3(policy="MultiInputPolicy",
                 env=env,verbose=0,
                 replay_buffer_class=HerReplayBuffer,
-                replay_buffer_kwargs=dict(n_sampled_goal=4),
-                learning_rate=linear_schedule(0.0003),
+                replay_buffer_kwargs=dict(n_sampled_goal=8,goal_selection_strategy='future'),
+                learning_rate=linear_schedule(0.001),
                 train_freq=1,
                 buffer_size=1000000,
-                learning_starts=500,
-                batch_size=256,
-                tau= 0.005,
-                gamma=0.93,
+                learning_starts=2000,
+                batch_size=512,
+                tau= 0.02,
+                gamma=0.90,
                 policy_kwargs=policy_kwargs,
                 gradient_steps=-1,
-                seed=42, action_noise=action_noise,tensorboard_log='./logs/{ran}')
+                seed=seed, action_noise=action_noise,tensorboard_log='./logs/{ran}')
 
 
     eval_env_kwargs = {
@@ -146,7 +150,7 @@ def train(threshold_pos=0.001,
     log_callback1 = log_callback.CustomCallback()
     success_callback = StopTrainingOnSuccessRate(vec_env=eval_env, 
                                                     max_no_improvement_evals=5, 
-                                                    success_threshold=0.8,  
+                                                    success_threshold=0.9,  
                                                     min_evals=5, verbose=1, 
                                                     model_name = model_name,
                                                     model_save_path=f'./best_models/{ran}')
@@ -175,7 +179,9 @@ if __name__ == "__main__":
     parser.add_argument('--contact_type', type=int, default=0, help='Type of contact for the environment.')
     parser.add_argument('--youngs_modulus', type=float, default=1e7, help='Young\'s modulus for the soft tissue.')
     parser.add_argument('--ran', type=str, default="1", help='Random seed for the run.')
-    parser.add_argument('--log', type=int, default=1, help='Whether to log the training run to W&B.')
+    parser.add_argument('--log', type=int, default=0, help='Whether to log the training run to W&B.')
+    parser.add_argument('--render_mode', type=str, default="human", help='Render mode for the environment.')
+    parser.add_argument('--seed', type=int, default=0, help='Random seed for reproducibility.')
     args = parser.parse_args()
     train(threshold_pos=args.threshold_pos, 
           threshold_ori=args.threshold_ori, 
@@ -187,4 +193,6 @@ if __name__ == "__main__":
           softtissue=args.softtissue, 
           ran=args.ran,
           log=args.log,
-          youngs_modulus=args.youngs_modulus)
+          youngs_modulus=args.youngs_modulus,
+          render_mode=args.render_mode,
+          seed=args.seed)
