@@ -77,10 +77,10 @@ def train(threshold_pos=0.001,
     softtissue = softtissue
     num_springs = num_springs
     contact_type = contact_type
-    youngs_modulus = "{:.1E}".format(youngs_modulus)
-    print(youngs_modulus)
+    youngs_modulus_name = "{:.1E}".format(youngs_modulus)
+    #print(youngs_modulus)
     #print(contact_type)
-    name = f'{softtissue}_{num_springs}_{youngs_modulus}_{train_date}'
+    name = f'{softtissue}_{num_springs}_{youngs_modulus_name}_{train_date}'
     model_name = f'model-{name}'
     if log==1:
         wandb.init(project="Chp2-Results1", name = (name),notes= (f"Git Commit: {commit}"),sync_tensorboard=True, save_code=True)  # Initialize W&B
