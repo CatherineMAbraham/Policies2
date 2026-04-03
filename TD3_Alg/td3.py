@@ -2,7 +2,7 @@ import gymnasium as gym
 from stable_baselines3 import TD3, HerReplayBuffer
 from stable_baselines3.common.noise import OrnsteinUhlenbeckActionNoise
 from stable_baselines3.common.callbacks import EvalCallback
-from stable_baselines3.common.vec_env import SubprocVecEnv, VecNormalize
+from stable_baselines3.common.vec_env import SubprocVecEnv, VecNormalize, DummyVecEnv
 from stable_baselines3.common.env_util import make_vec_env
 import wandb
 import numpy as np
@@ -77,11 +77,13 @@ def train(threshold_pos=0.001,
     softtissue = softtissue
     num_springs = num_springs
     contact_type = contact_type
+    youngs_modulus = "{:.1E}".format(youngs_modulus)
+    print(youngs_modulus)
     #print(contact_type)
     name = f'{softtissue}_{num_springs}_{youngs_modulus}_{train_date}'
     model_name = f'model-{name}'
     if log==1:
-        wandb.init(project="Tissue", name = (name),notes= (f"Git Commit: {commit}"),sync_tensorboard=True, save_code=True)  # Initialize W&B
+        wandb.init(project="Chp2-Results1", name = (name),notes= (f"Git Commit: {commit}"),sync_tensorboard=True, save_code=True)  # Initialize W&B
     #print((f'{softtissue}-{train_date}-{num_springs}-{youngs_modulus}-{ran}'))
     env_kwargs = {
         'reward_type': 'sparse',
@@ -103,7 +105,7 @@ def train(threshold_pos=0.001,
         'render_mode': render_mode}
         #"0.025 -0.04 0" rpy="0 1.57 0"
    
-    env = make_vec_env('gym_fracture:softsurg-v0', env_kwargs=env_kwargs, n_envs=1,vec_env_cls=SubprocVecEnv)
+    env = make_vec_env('gym_fracture:softsurg-v0', env_kwargs=env_kwargs, n_envs=1,vec_env_cls=DummyVecEnv, seed=seed)
     env = VecNormalize(env, norm_obs=True, norm_reward=False)
     action_noise = OrnsteinUhlenbeckActionNoise(mean=np.zeros(env.action_space.shape[0]),
                                               sigma=0.02 * np.ones(env.action_space.shape[0]))
@@ -151,14 +153,17 @@ def train(threshold_pos=0.001,
     success_callback = StopTrainingOnSuccessRate(vec_env=eval_env, 
                                                     max_no_improvement_evals=5, 
                                                     success_threshold=0.9,  
-                                                    min_evals=5, verbose=1, 
+                                                    min_evals=10, verbose=1, 
                                                     model_name = model_name,
                                                     model_save_path=f'./best_models/{ran}')
     eval_callback = EvalCallback(eval_env,  eval_freq=10000,
                                 deterministic=True, n_eval_episodes=50,
                                 callback_after_eval=success_callback)
-
-    model.learn(2_500_000, callback=[eval_callback,log_callback1])
+    if log == 1:
+        callback = [eval_callback, log_callback1]
+    else:
+        callback = [eval_callback]
+    model.learn(2_500_000, callback=callback)
     #save model name in log file
     with open('./logs/model_log.txt', 'w') as f:
         f.write(f'{model_name}\n')
