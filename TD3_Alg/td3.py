@@ -125,7 +125,7 @@ def train(threshold_pos=0.001,
                 gamma=0.90,
                 policy_kwargs=policy_kwargs,
                 gradient_steps=-1,
-                seed=seed, action_noise=action_noise,tensorboard_log='./logs/{ran}')
+                seed=seed, action_noise=action_noise,tensorboard_log=f'./logs/{ran}')
 
 
     eval_env_kwargs = {
