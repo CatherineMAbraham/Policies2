@@ -61,8 +61,14 @@ class StopTrainingOnSuccessRate(BaseCallback):
                 rb_path = os.path.join(self.model_save_path, self.model_name, f"{self.model_name}-rb.zip")
                 self.model.save_replay_buffer(rb_path)
                 model_log_path = os.path.join(os.getcwd(), 'model_log.csv')
-                with open(model_log_path, 'a') as f:
-                    f.write(f'{model_path}\n')
+                saved_model_paths = set()
+                if os.path.exists(model_log_path):
+                    with open(model_log_path, 'r') as f:
+                        saved_model_paths = {line.strip() for line in f if line.strip()}
+
+                if model_path not in saved_model_paths:
+                    with open(model_log_path, 'a') as f:
+                        f.write(f'{model_path}\n')
                 if self.verbose >= 1:
                     print(f"New best success rate: {self.best_success_rate:.2f} - model saved to {model_path}")
                 
