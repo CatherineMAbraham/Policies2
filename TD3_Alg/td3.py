@@ -83,7 +83,7 @@ def train(threshold_pos=0.001,
     name = f'{softtissue}_{num_springs}_{youngs_modulus_name}_{seed}_{train_date}'
     model_name = f'model-{name}'
     if log==1:
-        wandb.init(project="Chp2-Results1", name = (name),notes= (f"Git Commit: {commit}"),sync_tensorboard=True, save_code=True)  # Initialize W&B
+        wandb.init(project="Tissue", name = (name),notes= (f"Git Commit: {commit}"),sync_tensorboard=True, save_code=True)  # Initialize W&B
     #print((f'{softtissue}-{train_date}-{num_springs}-{youngs_modulus}-{ran}'))
     env_kwargs = {
         'reward_type': 'sparse',
