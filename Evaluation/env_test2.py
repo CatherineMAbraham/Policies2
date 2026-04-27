@@ -22,7 +22,8 @@ def multiple_envs(model_path,
                   num_springs=3,
                   n_envs=1,
                   num_eps=100,
-                  log=True):
+                  log=True,
+                  seed=42):
         #Find the second last value in the model string 
         #contact_model= model_path.split('_')[-2]
         #print(f"Contact model from path: {contact_model}")
@@ -52,7 +53,7 @@ def multiple_envs(model_path,
         # Remove . from beginning if present
         
         #model_path2 = os.path.join("/users/cop21cma/Policies2/TD3_Alg/", model_path)
-        env = make_vec_env('gym_fracture:softsurg-v0', n_envs=n_envs, env_kwargs=env_kwargs,vec_env_cls=SubprocVecEnv, seed=1)
+        env = make_vec_env('gym_fracture:softsurg-v0', n_envs=n_envs, env_kwargs=env_kwargs,vec_env_cls=SubprocVecEnv, seed=seed)
         #model_path2 = os.path.join("/users/cop21cma/Policies2/TD3/", model_path)
         #model_path2= model #'/home/catherine/Policies2/Curriculum/model-spring_03190722'#"/home/catherine/Policies2/Evaluation/best_models/1/model-spring_03140755_1_0_1"
         env = VecNormalize.load(f"{model_path}/vec_normalize.pkl", env) # Register the environment
@@ -143,6 +144,7 @@ if __name__ == "__main__":
     parser.add_argument("--n_envs", type=int, default=1, help="Number of parallel environments to test on")
     parser.add_argument("--num_eps", type=int, default=100, help="Number of episodes to collect data for")
     parser.add_argument("--log", type=int, default=0, help="Whether to log results to Weights & Biases")
+    parser.add_argument("--seed", type=int, default=42, help="Random seed for reproducibility")
     args = parser.parse_args()
     #remove everything before model in the model path
     #model_name = args.model_path.split("/")[-1].split(".")[0]
@@ -159,5 +161,6 @@ if __name__ == "__main__":
     threshold_ori=args.threshold_ori,
     n_envs=args.n_envs,
     num_eps=args.num_eps,
-    log=args.log
+    log=args.log,
+    seed=args.seed
 )

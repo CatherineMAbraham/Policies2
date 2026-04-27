@@ -14,7 +14,7 @@ source activate softsurg
 # Read the correct line from model_paths.csv
 TASK_ID=${SLURM_ARRAY_TASK_ID:-1}
 MODEL_LINE=$(sed -n "${TASK_ID}p" model_paths.csv)
-IFS=',' read -r MODEL_PATH <<< "$MODEL_LINE"
+IFS=',' read -r MODEL_PATH SEED <<< "$MODEL_LINE"
 echo "Running test with model path: $MODEL_PATH"
 MODEL=${MODEL_PATH//\'/}
 #Convert relative path to absolute
@@ -24,5 +24,6 @@ else
     FULL_MODEL_PATH=$MODEL
 fi
 echo "Full model path: $FULL_MODEL_PATH"
+echo "Seed: $SEED"
 # Run the script
-srun --export=ALL python td3_curriculum.py --threshold_pos 0.001 --threshold_ori 5 --action_type euler --maxforce 3 --softtissue spring --num_springs 3  --youngs_modulus 1e6 --model "$FULL_MODEL_PATH" --contact_type 0 --log 1
+srun --export=ALL python td3_curriculum.py --threshold_pos 0.001 --threshold_ori 5 --action_type euler --maxforce 4 --softtissue spring --num_springs 3  --youngs_modulus 5e6 --model "$FULL_MODEL_PATH" --contact_type 1 --log 1 --seed $SEED

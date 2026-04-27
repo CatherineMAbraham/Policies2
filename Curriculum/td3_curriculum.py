@@ -69,7 +69,8 @@ def train(threshold_pos=0.001,
           ran='1',
           youngs_modulus=1e6,
           model = 'model',
-          log=1):
+          log=1,
+          seed=42):
     commit = get_git_commit_hash(repo_path)
     x = datetime.datetime.now()
     train_date = x.strftime('%m%d%H%M')
@@ -145,7 +146,7 @@ def train(threshold_pos=0.001,
   
     
     # Separate evaluation env
-    eval_env=make_vec_env('gym_fracture:softsurg-v0', env_kwargs=env_kwargs,vec_env_cls=SubprocVecEnv)
+    eval_env=make_vec_env('gym_fracture:softsurg-v0', env_kwargs=env_kwargs,vec_env_cls=DummyVecEnv, seed= seed)
     
     eval_env = VecNormalize(eval_env, norm_obs=True, norm_reward=False)
     log_callback1 = log_callback.CustomCallback()
@@ -183,6 +184,7 @@ if __name__ == "__main__":
     parser.add_argument('--ran', type=str, default="1", help='Random seed for the run.')
     parser.add_argument('--log', type=int, default=1, help='Whether to log the training run to W&B.')
     parser.add_argument('--model', type=str, default="model", help='Model name.')
+    parser.add_argument('--seed', type=int, default=42, help='Random seed for reproducibility.')
     args = parser.parse_args()
     train(threshold_pos=args.threshold_pos, 
           threshold_ori=args.threshold_ori, 
@@ -195,6 +197,7 @@ if __name__ == "__main__":
           model=args.model,
           ran=args.ran,
           log=args.log,
-          youngs_modulus=args.youngs_modulus)
+          youngs_modulus=args.youngs_modulus,
+          seed=args.seed)
 
 
