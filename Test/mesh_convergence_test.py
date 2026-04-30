@@ -48,10 +48,10 @@ def multiple_envs(model_path,
                 'maxforce': maxforce,
                 'contact_type' : 0,
                 'start_pos' : 'home',
-                'render_mode': None,
+                'render_mode': 'human',
                 'test': True,}
         # Remove . from beginning if present
-        model_path = "/media/catherine/Data/Chapter2Test1Results/Selected_Models/model-spring_3_5.0E+06_8_04080339"
+        model_path = "./model-spring_3_5.0E+06_8_04080339"
         #model_path2 = os.path.join("/users/cop21cma/Policies2/TD3_Alg/", model_path)
         env = make_vec_env('gym_fracture:softsurg-v0', env_kwargs=env_kwargs,vec_env_cls=SubprocVecEnv, seed=seed)
         #model_path2 = os.path.join("/users/cop21cma/Policies2/TD3/", model_path)
@@ -59,6 +59,7 @@ def multiple_envs(model_path,
         env = VecNormalize.load(f"{model_path}/vec_normalize.pkl", env) # Register the environment
         env.training = False
         env.norm_reward = False
+
         model_dir = Path(model_path)
         model_candidates = sorted(
                 [p for p in model_dir.glob("model*") if p.is_file() and not p.name.endswith("-rb.zip")],
