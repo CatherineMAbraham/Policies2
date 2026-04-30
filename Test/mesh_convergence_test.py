@@ -41,14 +41,14 @@ def multiple_envs(model_path,
                 'dt': 0.001,
                 'dr':0.01,
                 'distance_threshold_ori': threshold_ori,
-                'softtissue': None,
+                'softtissue': softtissue,
                 'number_of_springs': num_springs,
                 'youngs_modulus': youngs_modulus,
                 'action_type': 'euler',
                 'maxforce': maxforce,
                 'contact_type' : 0,
                 'start_pos' : 'home',
-                'render_mode': 'human',
+                'render_mode': None,
                 'test': True,}
         # Remove . from beginning if present
         model_path = "./model-spring_3_5.0E+06_8_04080339"
