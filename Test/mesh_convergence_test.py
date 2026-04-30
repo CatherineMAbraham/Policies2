@@ -56,21 +56,21 @@ def multiple_envs(model_path,
         env = make_vec_env('gym_fracture:softsurg-v0', env_kwargs=env_kwargs,vec_env_cls=SubprocVecEnv, seed=seed)
         #model_path2 = os.path.join("/users/cop21cma/Policies2/TD3/", model_path)
         #model_path2= model #'/home/catherine/Policies2/Curriculum/model-spring_03190722'#"/home/catherine/Policies2/Evaluation/best_models/1/model-spring_03140755_1_0_1"
-        env = VecNormalize.load(f"{model_path}/vec_normalize.pkl", env) # Register the environment
+        #env = VecNormalize.load(f"{model_path}/vec_normalize.pkl", env) # Register the environment
         env.training = False
         env.norm_reward = False
 
-        model_dir = Path(model_path)
-        model_candidates = sorted(
-                [p for p in model_dir.glob("model*") if p.is_file() and not p.name.endswith("-rb.zip")],
-                key=lambda p: p.stat().st_mtime,
-                reverse=True,
-        )
-        if not model_candidates:
-                raise FileNotFoundError(f"No model files starting with 'model' found in {model_dir}")
+        # model_dir = Path(model_path)
+        # model_candidates = sorted(
+        #         [p for p in model_dir.glob("model*") if p.is_file() and not p.name.endswith("-rb.zip")],
+        #         key=lambda p: p.stat().st_mtime,
+        #         reverse=True,
+        # )
+        # if not model_candidates:
+        #         raise FileNotFoundError(f"No model files starting with 'model' found in {model_dir}")
 
-        selected_model = model_candidates[0]
-        model = TD3.load(str(selected_model), env=env)
+        # selected_model = model_candidates[0]
+        # #model = TD3.load(str(selected_model), env=env)
         #print(f"Loaded model: {selected_model}")
         dones = []
         contacts = []
@@ -82,8 +82,15 @@ def multiple_envs(model_path,
         #print(f"Initial observation: {obs}")
         eps = 0
         ep_force_values = [[] for _ in range(n_envs)]
+        # instead of using the model to take actions, we will define a path for the robot to follow and record the forces along the way.
+        #randomly sample actions from the action space 
+
         while episodes_collected < num:
-                        action, _ = model.predict(obs, deterministic=True)
+                        action = env.action_space.sample()
+                        action = np.asarray(action)
+                        if action.ndim == 1:
+                                action = action[None, :]
+                        #print(action)
                         obs, reward, done, info = env.step(action)
 
                         done_array = np.asarray(done).reshape(-1)
