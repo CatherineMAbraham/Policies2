@@ -1,4 +1,3 @@
-## test different young modulus and number of springs for the soft tissue and vtk file 
 #!/bin/bash
 #SBATCH --mail-user=cmabraham1@sheffield.ac.uk
 #SBATCH --mail-type=BEGIN,END,FAIL

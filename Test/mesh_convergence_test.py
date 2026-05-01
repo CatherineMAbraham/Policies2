@@ -23,7 +23,7 @@ def multiple_envs(model_path,
                   n_envs=1,
                   num_eps=100,
                   log=True,
-                  seed=42):
+                  seed=42,vtk_file=None):
         #Find the second last value in the model string 
         #contact_model= model_path.split('_')[-2]
         #print(f"Contact model from path: {contact_model}")
@@ -42,6 +42,7 @@ def multiple_envs(model_path,
                 'dr':0.01,
                 'distance_threshold_ori': threshold_ori,
                 'softtissue': softtissue,
+                'vtk_file': vtk_file,
                 'number_of_springs': num_springs,
                 'youngs_modulus': youngs_modulus,
                 'action_type': 'euler',
@@ -209,6 +210,7 @@ if __name__ == "__main__":
     parser.add_argument("--num_eps", type=int, default=100, help="Number of episodes to collect data for")
     parser.add_argument("--log", type=int, default=0, help="Whether to log results to Weights & Biases")
     parser.add_argument("--seed", type=int, default=42, help="Random seed for reproducibility")
+    parser.add_argument("--vtk_file", type=str, default=None, help="Path to the VTK file for soft tissue visualization")
     args = parser.parse_args()
     #remove everything before model in the model path
     #model_name = args.model_path.split("/")[-1].split(".")[0]
@@ -226,6 +228,6 @@ if __name__ == "__main__":
     n_envs=args.n_envs,
     num_eps=args.num_eps,
     log=args.log,
-    seed=args.seed
+    seed=args.seed,vtk_file=args.vtk_file
 )
  
