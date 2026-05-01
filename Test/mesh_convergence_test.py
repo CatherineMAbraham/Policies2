@@ -48,7 +48,7 @@ def multiple_envs(model_path,
                 'maxforce': maxforce,
                 'contact_type' : 0,
                 'start_pos' : 'home',
-                'render_mode': None,
+                'render_mode': 'human',
                 'test': True,}
         # Remove . from beginning if present
         model_path = "./model-spring_3_5.0E+06_8_04080339"
@@ -214,7 +214,7 @@ if __name__ == "__main__":
     #model_name = args.model_path.split("/")[-1].split(".")[0]
     
     if args.log==1:
-        wandb.init(project="meshconvergence", name=f"{args.softtissue}_springs_{args.num_springs}_youngs_{args.youngs_modulus}")
+        wandb.init(project="meshconvergence", name=f"{args.softtissue}_{args.num_springs}_youngs_{args.youngs_modulus}")
     multiple_envs(
     model_path=args.model_path,
     maxforce=args.maxforce,
