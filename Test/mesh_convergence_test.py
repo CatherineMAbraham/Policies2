@@ -104,12 +104,21 @@ def multiple_envs(model_path,
                                 if not np.isnan(ep_force_value) and ep_force_value < 50 and ep_force_value > 0:
                                         ep_force_values[env_idx].append(ep_force_value)
                                 force_axis.append(step_info.get("force_axis_mean"))
-                                #print(force_axis)
-                                #print(ep_force_value)
+                                
+                                # Log all steps
+                                if log == 1:
+                                        force_axis_mean = step_info.get("force_axis_mean", [0, 0, 0])
+                                        wandb.log({
+                                                "Step Force": step_info.get("force", 0),
+                                                "X Force": force_axis_mean[0],
+                                                "Y Force": force_axis_mean[1],
+                                                "Z Force": force_axis_mean[2],
+                                                "Position Distance": step_info.get("pos_distance", 0),
+                                                "Angle Distance": step_info.get("angle", 0),
+                                        })
+                                
                                 if not done_flag:
                                         continue
-
-                                #print(step_info)
 
                                 is_success = step_info.get("is_success", False)
                                 has_contact = step_info.get("contact", False)
@@ -123,18 +132,15 @@ def multiple_envs(model_path,
                                 ep_force_values[env_idx] = []
                                 if np.isfinite(force_value) and force_value <= 50:
                                         eps += 1
+                                
+                                # Log episode summary
                                 if log == 1:
                                         wandb.log({
                                                 "Episode": episodes_collected,
                                                 "Contact": has_contact,
-                                                "force": force_value,
-                                                "Position Distance": step_info.get("pos_distance", 0),
-                                                "Angle Distance": step_info.get("angle", 0),
+                                                "Episode Force Mean": force_value,
                                                 "Success": is_success,
                                                 "Success Rate": sum(dones) / len(dones),
-                                                "X Force": step_info.get("force_axis_mean", [0, 0, 0])[0],
-                                                "Y Force": step_info.get("force_axis_mean", [0, 0, 0])[1],
-                                                "Z Force": step_info.get("force_axis_mean", [0, 0, 0])[2],
                                         })
                                         if np.isfinite(force_value) and force_value <= 50 and eps > 0:
                                                 wandb.run.summary["final_success_rate"] = sum(dones) / eps
@@ -169,7 +175,7 @@ def multiple_envs(model_path,
                 fig.suptitle("Force Axis Components vs Time")
                 plt.tight_layout()
                 #plt.show()
-                plt.savefig(f"{model_path}/force_axis_components.png")
+                plt.savefig("./force_axis_components.png")
         else:
                 print("No valid force_axis_mean data to plot.")
         # success_no_contact = sum(1 for d, c in zip(dones, contacts) if d and not c)
