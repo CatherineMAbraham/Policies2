@@ -49,7 +49,7 @@ def multiple_envs(model_path,
                 'maxforce': maxforce,
                 'contact_type' : 0,
                 'start_pos' : 'home',
-                'render_mode': 'human',
+                'render_mode': None,
                 'test': True,}
         # Remove . from beginning if present
         model_path = "./model-spring_3_5.0E+06_8_04080339"
