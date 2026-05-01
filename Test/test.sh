@@ -21,4 +21,4 @@ PARAM_LINE=$(sed -n "${TASK_ID}p" tests.csv)
 IFS=',' read -r FILE YOUNGS_MODULUS <<< "$PARAM_LINE"
 echo "Running test with: Young's Modulus=$YOUNGS_MODULUS, VTK File=$FILE"
 # Run the script 
-srun --export=ALL python mesh_convergence_test.py --threshold_pos 0.001 --threshold_ori 5 --action_type euler --maxforce 4 --softtissue soft --youngs_modulus $YOUNGS_MODULUS --contact_type 1 --vtk_file $FILE 
+srun --export=ALL python mesh_convergence_test.py --threshold_pos 0.001 --threshold_ori 5 --action_type euler --maxforce 4 --softtissue soft --youngs_modulus $YOUNGS_MODULUS --contact_type 1 --vtk_file $FILE --log 1
