@@ -3,7 +3,7 @@ from stable_baselines3 import TD3, HerReplayBuffer
 from stable_baselines3.common import vec_env
 from stable_baselines3.common.noise import OrnsteinUhlenbeckActionNoise
 from stable_baselines3.common.callbacks import EvalCallback,StopTrainingOnNoModelImprovement
-from stable_baselines3.common.vec_env import SubprocVecEnv, VecNormalize
+from stable_baselines3.common.vec_env import SubprocVecEnv, VecNormalize, DummyVecEnv
 from stable_baselines3.common.env_util import make_vec_env
 import tensorboard
 #from gym_fracture.envs.fracuresurgery import fracturesurgery_env
@@ -106,7 +106,7 @@ def train(threshold_pos=0.001,
     model_path = model
 
     #vec_env=make_vec_env('gym_fracture:softsurg-v0', env_kwargs=env_kwargs, n_envs=1,vec_env_cls=SubprocVecEnv)
-    env = make_vec_env('gym_fracture:softsurg-v0', env_kwargs=env_kwargs, n_envs=1,vec_env_cls=SubprocVecEnv)
+    env = make_vec_env('gym_fracture:softsurg-v0', env_kwargs=env_kwargs, n_envs=1,vec_env_cls=DummyVecEnv, seed=seed)
     #env = VecNormalize(env, norm_obs=True, norm_reward=False)
     env = VecNormalize.load(f"{model_path}/vec_normalize.pkl", env) # Register the environment
     env.training = True
@@ -146,7 +146,7 @@ def train(threshold_pos=0.001,
   
     
     # Separate evaluation env
-    eval_env=make_vec_env('gym_fracture:softsurg-v0', env_kwargs=env_kwargs,vec_env_cls=DummyVecEnv, seed= seed)
+    eval_env=make_vec_env('gym_fracture:softsurg-v0', env_kwargs=env_kwargs,vec_env_cls=SubprocVecEnv, seed= seed)
     
     eval_env = VecNormalize(eval_env, norm_obs=True, norm_reward=False)
     log_callback1 = log_callback.CustomCallback()
