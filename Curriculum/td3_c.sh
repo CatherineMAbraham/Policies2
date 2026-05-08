@@ -21,7 +21,7 @@ MODEL=${MODEL_PATH//\'/}
 if [[ "$MODEL" == /* ]]; then
     FULL_MODEL_PATH=/users/cop21cma/Policies2/TD3_Alg"$MODEL"
 else
-    FULL_MODEL_PATH=/"$MODEL"
+    FULL_MODEL_PATH=$MODEL
 fi
 echo "Full model path: $FULL_MODEL_PATH"
 echo "Seed: $SEED"
