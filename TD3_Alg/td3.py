@@ -59,6 +59,13 @@ def linear_schedule(initial_value: float) -> Callable[[float], float]:
 
         return func
 
+def get_youngs_modulus():
+    young_modulus_options = [1e6 ,1e7,5e6, 1e8]
+    ## Select a youngs modulus for the eval, making sure to use a different one each time 
+    youngs_modulus = np.random.choice(young_modulus_options)
+    print(f"Selected Young's Modulus for evaluation: {youngs_modulus}")
+    return youngs_modulus
+
 
 def train(threshold_pos=0.001, 
           threshold_ori=np.deg2rad(6), 
@@ -160,7 +167,7 @@ def train(threshold_pos=0.001,
             'number_of_springs':num_springs,
             'softtissue':softtissue,
             'test': False,
-            'youngs_modulus': None,
+            'youngs_modulus': get_youngs_modulus(),
             'render_mode': None}
     eval_env=make_vec_env('gym_fracture:softsurg-v0', env_kwargs=eval_env_kwargs,vec_env_cls=SubprocVecEnv)
     
