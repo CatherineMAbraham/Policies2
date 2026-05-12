@@ -47,7 +47,9 @@ class CustomCallback(BaseCallback):
                                f'Holding{j}': infos[j].get('isHolding', 0),
                                f'Contact{j}': infos[j].get('contact', 0),
                                f'Position Distance{j}': infos[j].get('pos_distance', 0),
-                               f'Angle Distance{j}': infos[j].get('angle', 0)})
+                               f'Angle Distance{j}': infos[j].get('angle', 0),
+                               f'Youngs Modulus{j}': infos[j].get('young_modulus', 0),
+                               f'Width{j}': infos[j].get('width', 0)})
                     #print(f"Max Force{j}: {infos[j].get('force')}, Contact{j}: {infos[j].get('contact')}")
         return True
 
