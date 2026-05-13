@@ -68,6 +68,7 @@ def train(threshold_pos=0.001,
           contact_type="None",
           ran='1',
           youngs_modulus=1e6,
+          youngs_modulus_type="None",
           model = 'model',
           log=1,
           seed=42):
@@ -102,6 +103,7 @@ def train(threshold_pos=0.001,
         'softtissue':softtissue,
         'test': False,
         'youngs_modulus': youngs_modulus,
+        'youngs_modulus_type': youngs_modulus_type,
         'render_mode': None}
     model_path = model
 
@@ -181,6 +183,7 @@ if __name__ == "__main__":
     parser.add_argument('--num_springs', type=int, default=3, help='Number of springs for the soft tissue.')
     parser.add_argument('--contact_type', type=int, default=0, help='Type of contact for the environment.')
     parser.add_argument('--youngs_modulus', type=float, default=1e6, help='Young\'s modulus for the soft tissue.')
+    parser.add_argument('--youngs_modulus_type', type=str, default="None", help='Type of Young\'s modulus for the soft tissue.')
     parser.add_argument('--ran', type=str, default="1", help='Random seed for the run.')
     parser.add_argument('--log', type=int, default=1, help='Whether to log the training run to W&B.')
     parser.add_argument('--model', type=str, default="model", help='Model name.')
@@ -198,6 +201,7 @@ if __name__ == "__main__":
           ran=args.ran,
           log=args.log,
           youngs_modulus=args.youngs_modulus,
+          youngs_modulus_type=args.youngs_modulus_type,
           seed=args.seed)
 
 
