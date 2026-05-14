@@ -55,7 +55,7 @@ def train(threshold_pos=0.001, threshold_ori=np.deg2rad(6), action_type='pos_onl
     action_type = action_type
     threshold_pos = threshold_pos
     threshold_ori = np.deg2rad(threshold_ori)
-    wandb.init(project="Chp1-Test", name = (f'{train_date}-{action_type}-{threshold_pos}-{np.round(threshold_ori,2)}-{seed}'),notes= (f"Git Commit: {commit}, Ori:{threshold_ori}"),sync_tensorboard=True, save_code=True)  # Initialize W&B
+    wandb.init(project="Chp1-Test", name = (f'{train_date}-{action_type}-{threshold_pos}-{np.rad2deg(threshold_ori)}'),notes= (f"Git Commit: {commit}, Ori:{threshold_ori}"),sync_tensorboard=True, save_code=True)  # Initialize W&B
     env_kwargs = {
         'reward_type': 'sparse',
         'max_steps': 100,
@@ -71,7 +71,7 @@ def train(threshold_pos=0.001, threshold_ori=np.deg2rad(6), action_type='pos_onl
         
     
     #vec_env=make_vec_env('gym_fracture:softsurg-v0', env_kwargs=env_kwargs, n_envs=1,vec_env_cls=SubprocVecEnv)
-    vec_env = gym.make('gym_fracture:softsurg-v0', **env_kwargs)
+    vec_env = gym.make('gym_fracture:anklesurg-v0', **env_kwargs)
     action_noise = OrnsteinUhlenbeckActionNoise(mean=np.zeros(vec_env.action_space.shape[0]), 
                                               sigma=0.02 * np.ones(vec_env.action_space.shape[0]))
 
@@ -97,7 +97,7 @@ def train(threshold_pos=0.001, threshold_ori=np.deg2rad(6), action_type='pos_onl
     # Separate evaluation env
     #log_callback1 = log_callback.CustomCallback()
 #    early_stop = StopTrainingOnNoModelImprovement(max_no_improvement_evals=10,min_evals=15, verbose=1)
-    eval_env = Monitor(gym.make('gym_fracture:softsurg-v0', **env_kwargs))
+    eval_env = Monitor(gym.make('gym_fracture:anklesurg-v0', **env_kwargs))
     #(make_vec_env(lambda: gym.make('gym_fracture:softsurg-v0', **env_kwargs), n_envs=1))
 
     eval_callback = EvalCallback(eval_env,  eval_freq=10000, 
