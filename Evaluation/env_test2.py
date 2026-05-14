@@ -17,10 +17,11 @@ def multiple_envs(model_path,
                   threshold_pos=0.001, 
                   threshold_ori=0.08,
                   maxforce=5,
-                  softtissue='spring',
+                  softtissue='soft',
                   youngs_modulus=1e7,
                   num_springs=3,
                   n_envs=1,
+                  vtk_file='rect005.vtk',
                   num_eps=100,
                   log=True,
                   seed=42):
@@ -32,6 +33,11 @@ def multiple_envs(model_path,
         # else:
 
         #         contact_type = 1
+        #goal_pos = np.array([0.3091113269329071, -0.060230158269405365, 0.15660402178764343])
+        #goal_ori = np.array([0.9997855687184534, -0.00617234947044787, -0.019766510735738874, -6.11364646429962e-05])
+        #goal_type = np.concatenate((goal_pos, goal_ori))
+        #threshold_pos = 0.001
+        #threshold_ori = np.deg2rad(1)
         env_kwargs = {
                 'reward_type': 'sparse',
                 'max_steps': 100,
@@ -44,22 +50,26 @@ def multiple_envs(model_path,
                 'softtissue': softtissue,
                 'number_of_springs': num_springs,
                 'youngs_modulus': youngs_modulus,
+                'vtk_file': vtk_file,
                 'action_type': 'euler',
                 'maxforce': maxforce,
-                'contact_type' : 0,
+                'contact_type' : 1,
                 'start_pos' : 'home',
-                'render_mode': None,
-                'test': True,}
+                'render_mode': 'human',
+                'test': False,}
+     
         # Remove . from beginning if present
-        
+        #model_path = model #"/media/catherine/Data/Chapter2Test1Results/Selected_Models/model-spring_3_5.0E+06_8_04080339"
+        model_path2 = os.path.join("/home/catherine/Policies2/", model_path) 
+        #print(f"Loading model from: {model_path2}")
         #model_path2 = os.path.join("/users/cop21cma/Policies2/TD3_Alg/", model_path)
         env = make_vec_env('gym_fracture:softsurg-v0', n_envs=n_envs, env_kwargs=env_kwargs,vec_env_cls=SubprocVecEnv, seed=seed)
         #model_path2 = os.path.join("/users/cop21cma/Policies2/TD3/", model_path)
         #model_path2= model #'/home/catherine/Policies2/Curriculum/model-spring_03190722'#"/home/catherine/Policies2/Evaluation/best_models/1/model-spring_03140755_1_0_1"
-        env = VecNormalize.load(f"{model_path}/vec_normalize.pkl", env) # Register the environment
+        env = VecNormalize.load(f"{model_path2}/vec_normalize.pkl", env) # Register the environment
         env.training = False
         env.norm_reward = False
-        model_dir = Path(model_path)
+        model_dir = Path(model_path2)
         model_candidates = sorted(
                 [p for p in model_dir.glob("model*") if p.is_file() and not p.name.endswith("-rb.zip")],
                 key=lambda p: p.stat().st_mtime,
@@ -70,13 +80,13 @@ def multiple_envs(model_path,
 
         selected_model = model_candidates[0]
         model = TD3.load(str(selected_model), env=env)
-        print(f"Loaded model: {selected_model}")
+        #print(f"Loaded model: {selected_model}")
         dones = []
         contacts = []
         num = num_eps
         episodes_collected = 0
         obs = env.reset()
-        print(f"Initial observation: {obs}")
+        #print(f"Initial observation: {obs}")
         eps = 0
         while episodes_collected < num:
                 action, _ = model.predict(obs, deterministic=True)
@@ -138,7 +148,8 @@ if __name__ == "__main__":
     parser.add_argument('--maxforce', type=float, default=4, help='Force threshold for the environment.')
     parser.add_argument('--youngs_modulus', type=float, default=1e6, help='Young\'s modulus for the soft tissue.')
     parser.add_argument('--num_springs', type=int, default=3, help='Number of springs for the soft tissue.')
-    parser.add_argument('--softtissue', type=str, default="spring", help='Soft Tissue Type.')
+    parser.add_argument('--softtissue', type=str, default="soft", help='Soft Tissue Type.')
+    parser.add_argument("--vtk_file", type=str, default=None, help="Path to the VTK file for soft tissue visualization")
     parser.add_argument("--threshold_pos", type=float, default=0.001, help="Position threshold for success")
     parser.add_argument("--threshold_ori", type=float, default=0.08, help="Orientation threshold for success")
     parser.add_argument("--n_envs", type=int, default=1, help="Number of parallel environments to test on")
@@ -156,6 +167,7 @@ if __name__ == "__main__":
     maxforce=args.maxforce,
     num_springs=args.num_springs,
     softtissue=args.softtissue,
+    vtk_file=args.vtk_file,
     youngs_modulus=args.youngs_modulus,
     threshold_pos=args.threshold_pos,
     threshold_ori=args.threshold_ori,

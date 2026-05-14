@@ -24,7 +24,8 @@ SEED=${SEED//\'/}
 if [[ "$MODEL" == /* ]]; then
     FULL_MODEL_PATH=/users/cop21cma/Policies2/TD3_Alg"$MODEL"
 else
-    FULL_MODEL_PATH=/"$MODEL"
+    FULL_MODEL_PATH="$MODEL"
 fi
 echo "Testing model: $MODEL"
-srun --export=ALL python env_test2.py --num_eps 1000 --n_envs 5 --model_path "$FULL_MODEL_PATH" --maxforce 4 --softtissue soft --youngs_modulus 1e7 --log 1 --seed $SEED
+#srun --export=ALL 
+python env_test2.py --num_eps 1000 --n_envs 1 --model_path "$FULL_MODEL_PATH" --maxforce 4 --softtissue spring --vtk_file rect005.vtk --threshold_pos 0.001 --threshold_ori 1 --youngs_modulus 1e7 --log 0 --seed $SEED
