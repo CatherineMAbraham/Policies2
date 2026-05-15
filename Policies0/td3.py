@@ -91,7 +91,7 @@ def train(threshold_pos=0.001, threshold_ori=np.deg2rad(6), action_type='pos_onl
                 policy_kwargs=policy_kwargs,
                 gradient_steps=-1,
                 seed=seed, action_noise=action_noise,
-                tensorboard_log='./logs/{ran}')
+                tensorboard_log=f'./logs/{ran}')
 
     
     # Separate evaluation env
