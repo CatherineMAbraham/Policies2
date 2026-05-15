@@ -48,7 +48,7 @@ def linear_schedule(initial_value: float) -> Callable[[float], float]:
 
 
 def train(threshold_pos=0.001, threshold_ori=np.deg2rad(6), action_type='pos_only',seed=42,ran="1"):
-    commit = get_git_commit_hash(repo_path)
+    #commit = get_git_commit_hash(repo_path)
     x = datetime.datetime.now()
     train_date = x.strftime('%m%d%H%M')
     render_mode = render_mode
