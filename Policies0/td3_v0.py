@@ -51,7 +51,8 @@ def train(threshold_pos=0.001, threshold_ori=np.deg2rad(6), action_type='pos_onl
     #commit = get_git_commit_hash(repo_path)
     x = datetime.datetime.now()
     train_date = x.strftime('%m%d%H%M')
-    render_mode = render_mode
+    #render_mode = render_mode
+    log =0
     for repo_path in repo_paths:
         try:
             commit = get_git_commit_hash(repo_path)
@@ -69,7 +70,7 @@ def train(threshold_pos=0.001, threshold_ori=np.deg2rad(6), action_type='pos_onl
     
     model_name = f'model-{train_date}-{action_type}-{np.rad2deg(threshold_pos)}-{seed}'
     if log == 1:
-        wandb.init(project="Chp1-Test", name = (f'{model_name}'),notes= (f"Git Commit: {commit}"),sync_tensorboard=True, save_code=True)  # Initialize W&B
+        wandb.init(project="Chp1-Test", name = (f'{model_name}'),notes= (f"Git Commit: {commit}"),tags="pos_only",sync_tensorboard=True, save_code=True)  # Initialize W&B
     
     env_kwargs = {
         'reward_type': 'sparse',
