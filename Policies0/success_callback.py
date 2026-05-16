@@ -71,7 +71,7 @@ class StopTrainingOnSuccessRate(BaseCallback):
                         with open(model_log_path, 'a') as f:
                             f.write(f'{model_path}\n')
                 if self.verbose >= 1:
-                    print(f"New best success rate: {self.best_success_rate:.2f} - model saved to {model_path}")
+                    print(f"New best success rate: {self.best_success_rate:.2f} ")
                 
                 wandb.summary['best_success_rate'] = self.best_success_rate
             else:
